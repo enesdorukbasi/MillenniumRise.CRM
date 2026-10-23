@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/Presentation/">
+    <Project Path="Presentation/presentation.client/presentation.client.esproj">
+      <Build />
+      <Deploy />
+    </Project>
+    <Project Path="Presentation/Presentation.Server/Presentation.Server.csproj" />
+  </Folder>
+  <Project Path="Application/Application.csproj" />
+  <Project Path="Domain/Domain.csproj" />
+  <Project Path="Infrastructure.Persistence/Infrastructure.Persistence.csproj" />
+  <Project Path="Infrastructure/Infrastructure.csproj" />
+</Solution>
