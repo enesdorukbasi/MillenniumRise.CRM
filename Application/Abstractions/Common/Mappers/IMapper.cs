@@ -1,4 +1,4 @@
-﻿namespace Application.Abstractions.Common.Validators;
+﻿namespace Application.Abstractions.Common.Mappers;
 
 public interface IMapper<E, D> where E : class
 {
