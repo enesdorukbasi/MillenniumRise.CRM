@@ -1,4 +1,6 @@
+using Application.Abstractions.Persistence.Repository;
 using Infrastructure.Persistence.Contexts;
+using Infrastructure.Persistence.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +18,7 @@ public static class ServiceRegistrator
     }
     private static void AddDependencyInjection(this IServiceCollection services)
     {
-
+        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
     }
     private static void AddMySQL(this IServiceCollection services, IConfiguration configuration)
     {
