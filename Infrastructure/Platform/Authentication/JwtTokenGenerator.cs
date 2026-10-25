@@ -1,4 +1,3 @@
-using Application.Feature.AppUserFeature.DTOs;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
@@ -7,6 +6,7 @@ using Application.Abstractions.Platform.Authentication.Models;
 using Application.Abstractions.Platform.Authentication;
 using Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
+using Application.Features.AppUserFeature.DTOs;
 
 namespace Infrastructure.Platform.Authentication;
 

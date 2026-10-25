@@ -1,6 +1,6 @@
 using Application.Common.DTOs;
 
-namespace Application.Feature.AppUserFeature.DTOs;
+namespace Application.Features.AppUserFeature.DTOs;
 
 public record AppUserDto : BaseDto
 {

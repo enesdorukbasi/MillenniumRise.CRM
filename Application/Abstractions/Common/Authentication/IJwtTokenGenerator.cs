@@ -1,4 +1,4 @@
-using Application.Feature.AppUserFeature.DTOs;
+using Application.Features.AppUserFeature.DTOs;
 using Domain.Entities;
 using System.Security.Claims;
 
