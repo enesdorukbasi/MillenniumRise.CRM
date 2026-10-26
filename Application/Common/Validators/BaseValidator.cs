@@ -1,4 +1,4 @@
-﻿using Application.Abstractions.Common.Validators;
+﻿using Application.Abstractions.Validators;
 
 namespace Application.Common.Validators;
 

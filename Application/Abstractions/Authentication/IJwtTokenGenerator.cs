@@ -2,7 +2,7 @@ using Application.Features.AppUserFeature.DTOs;
 using Domain.Entities;
 using System.Security.Claims;
 
-namespace Application.Abstractions.Platform.Authentication;
+namespace Application.Abstractions.Authentication;
 
 public interface IJwtTokenGenerator
 {

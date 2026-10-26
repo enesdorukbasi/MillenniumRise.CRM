@@ -2,13 +2,13 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
-using Application.Abstractions.Platform.Authentication.Models;
-using Application.Abstractions.Platform.Authentication;
 using Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using Application.Features.AppUserFeature.DTOs;
+using Application.Abstractions.Authentication;
+using Application.Abstractions.Authentication.Models;
 
-namespace Infrastructure.Platform.Authentication;
+namespace Infrastructure.Authentication;
 
 public sealed class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtTokenGenerator
 {
@@ -33,8 +33,7 @@ public sealed class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtToken
         return new SymmetricSecurityKey(keyBytes);
     }
 
-    public LoginResponseDto GenerateToken(AppUser user, IEnumerable<Claim>? extraClaims = null)
-        => GenerateToken(user.Id, user.FullName, user.Email, user.PhoneNumber, extraClaims);
+    public LoginResponseDto GenerateToken(AppUser user, IEnumerable<Claim>? extraClaims = null) => GenerateToken(user.Id, user.FullName, user.Email, user.PhoneNumber, extraClaims);
 
     private LoginResponseDto GenerateToken(Guid id, string? fullName, string? email, string? phoneNumber, IEnumerable<Claim>? extraClaims)
     {

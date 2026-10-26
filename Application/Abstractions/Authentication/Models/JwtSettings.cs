@@ -1,4 +1,4 @@
-﻿namespace Application.Abstractions.Platform.Authentication.Models;
+﻿namespace Application.Abstractions.Authentication.Models;
 
 public sealed class JwtSettings
 {

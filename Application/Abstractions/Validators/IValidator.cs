@@ -1,4 +1,4 @@
-﻿namespace Application.Abstractions.Common.Validators;
+﻿namespace Application.Abstractions.Validators;
 
 public interface IValidator<T>
 {
