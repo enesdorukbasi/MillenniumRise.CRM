@@ -1,8 +1,15 @@
 using System.Diagnostics;
+using Application;
+using Infrastructure;
+using Infrastructure.Persistence;
 using Presentation.Server.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services
+    .AddApplicationServices()
+    .AddInfrastructureServices(builder.Configuration)
+    .AddPersistenceServices(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddProblemDetails(options =>
@@ -32,6 +39,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

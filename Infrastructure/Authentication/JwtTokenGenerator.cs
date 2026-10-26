@@ -15,7 +15,7 @@ public sealed class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtToken
     private readonly JwtSettings _jwtSettings = options.Value;
     private readonly SymmetricSecurityKey _symmetricSecurityKey = CreateSecurityKey(options.Value.Key);
 
-    private static SymmetricSecurityKey CreateSecurityKey(string key)
+    internal static SymmetricSecurityKey CreateSecurityKey(string key)
     {
         byte[] keyBytes;
         try

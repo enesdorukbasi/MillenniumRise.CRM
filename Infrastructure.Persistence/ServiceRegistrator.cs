@@ -12,23 +12,18 @@ public static class ServiceRegistrator
 {
     public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDependencyInjection();
-        services.AddMySQL(configuration);
+        services.AddDependencyServices();
+        services.AddMySqlServices(configuration);
         return services;
     }
-    private static void AddDependencyInjection(this IServiceCollection services)
+
+    private static void AddDependencyServices(this IServiceCollection services)
     {
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
     }
-    private static void AddMySQL(this IServiceCollection services, IConfiguration configuration)
-    {
-        var configuredConnectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection ayarı bulunamadı.");
-        var connectionStringBuilder = new MySqlConnectionStringBuilder(configuredConnectionString)
-        {
-            AllowUserVariables = true
-        };
 
-        services.AddDbContextFactory<CrmDbContext>(options => options.UseMySQL(connectionStringBuilder.ConnectionString));
+    private static void AddMySqlServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDbContextFactory<CrmDbContext>(options => options.UseMySQL(configuration.GetConnectionString("DefaultConnection") ?? ""));
     }
 }
