@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Text.Json.Serialization;
 
 namespace Presentation.Server.Common.ApiResult;
 
 public class ApiResult
 {
-    public required int StatusCode { get; init; }
-    public string? Code { get; init; }
+    [JsonIgnore]
+    public HttpStatusCode StatusCode { get; init; }
     public ProblemDetails? Fail { get; init; }
 
     [JsonIgnore]
