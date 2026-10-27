@@ -1,28 +1,26 @@
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using System.Text;
-using Domain.Entities;
-using System.IdentityModel.Tokens.Jwt;
-using Application.Features.AppUserFeature.DTOs;
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Authentication.Models;
+using Application.Features.AppUserFeature.DTOs;
+using Domain.Entities;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Infrastructure.Authentication;
 
-public sealed class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtTokenGenerator
+public sealed class JwtTokenGenerator(IOptions<JwtSettings> options, SymmetricSecurityKey symmetricSecurityKey) : IJwtTokenGenerator
 {
-    private readonly JwtSettings _jwtSettings = options.Value;
-    private readonly SymmetricSecurityKey _symmetricSecurityKey = CreateSecurityKey(options.Value.Key);
-
-    internal static SymmetricSecurityKey CreateSecurityKey(string key)
+    public static SymmetricSecurityKey CreateSecurityKey(string key)
     {
         byte[] keyBytes;
+
         try
         {
             keyBytes = Convert.FromBase64String(key);
         }
-        catch
+        catch (FormatException)
         {
             keyBytes = Encoding.UTF8.GetBytes(key);
         }
@@ -37,7 +35,7 @@ public sealed class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtToken
 
     private LoginResponseDto GenerateToken(Guid id, string? fullName, string? email, string? phoneNumber, IEnumerable<Claim>? extraClaims)
     {
-        var signingCredentials = new SigningCredentials(_symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+        var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Sub, id.ToString()),
@@ -52,10 +50,10 @@ public sealed class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtToken
         if (extraClaims is not null)
             claims.AddRange(extraClaims);
 
-        var expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiresInMinutes);
+        var expires = DateTime.UtcNow.AddMinutes(options.Value.ExpiresInMinutes);
         var token = new JwtSecurityToken(
-            issuer: _jwtSettings.Issuer,
-            audience: _jwtSettings.Audience,
+            issuer: options.Value.Issuer,
+            audience: options.Value.Audience,
             claims: claims,
             notBefore: DateTime.UtcNow,
             expires: expires,

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Infrastructure;
 
@@ -18,7 +19,7 @@ public static class ServiceRegistrator
     }
     private static IServiceCollection AddDependencyInjections(this IServiceCollection services)
     {
-        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         return services;
     }
@@ -38,6 +39,7 @@ public static class ServiceRegistrator
         var signingKey = JwtTokenGenerator.CreateSecurityKey(jwtSettings.Key);
 
         services.Configure<JwtSettings>(jwtSection);
+        services.AddSingleton(signingKey);
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
         {
             options.TokenValidationParameters = new TokenValidationParameters
