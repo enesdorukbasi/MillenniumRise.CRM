@@ -18,9 +18,9 @@ namespace Presentation.Server.Controllers;
 public sealed class UploadedFileController(ISender sender) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetList(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetList([FromQuery] GetUploadedFileListQuery query, CancellationToken cancellationToken)
     {
-        var response = await sender.Send(new GetUploadedFileListQuery(), cancellationToken);
+        var response = await sender.Send(query, cancellationToken);
         return ApiResultFactory.Success(response).ToActionResult();
     }
 
