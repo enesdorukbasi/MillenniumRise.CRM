@@ -12,11 +12,17 @@ public static class ServiceRegistrator
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddJwtServices(configuration);
+        return services
+            .AddDependencyInjections()
+            .AddJwtServices(configuration);
+    }
+    private static IServiceCollection AddDependencyInjections(this IServiceCollection services)
+    {
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
         return services;
     }
-
-    private static void AddJwtServices(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddJwtServices(this IServiceCollection services, IConfiguration configuration)
     {
         var jwtSection = configuration.GetRequiredSection(JwtSettings.SectionName);
         JwtSettings jwtSettings = jwtSection.Get<JwtSettings>() ?? throw new InvalidOperationException("Jwt ayarları okunamadı.");
@@ -32,7 +38,6 @@ public static class ServiceRegistrator
         var signingKey = JwtTokenGenerator.CreateSecurityKey(jwtSettings.Key);
 
         services.Configure<JwtSettings>(jwtSection);
-        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
         {
             options.TokenValidationParameters = new TokenValidationParameters
@@ -48,5 +53,6 @@ public static class ServiceRegistrator
             };
         });
         services.AddAuthorization();
+        return services;
     }
 }

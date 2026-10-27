@@ -8,31 +8,30 @@ public static class ServiceRegistrator
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddMediatRServices();
-        services.AddValidatorServices();
-        services.AddMapperServices();
-        return services;
+        return services
+            .AddMediatRServices()
+            .AddValidatorServices()
+            .AddMapperServices();
     }
 
-    private static void AddMediatRServices(this IServiceCollection services)
+    private static IServiceCollection AddMediatRServices(this IServiceCollection services)
     {
-        services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(ServiceRegistrator).Assembly));
+        return services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(ServiceRegistrator).Assembly));
     }
 
-    private static void AddValidatorServices(this IServiceCollection services)
+    private static IServiceCollection AddValidatorServices(this IServiceCollection services)
     {
-        services.AddGenericImplementations(typeof(IValidator<>));
+        return services.AddGenericImplementations(typeof(IValidator<>));
     }
 
-    private static void AddMapperServices(this IServiceCollection services)
+    private static IServiceCollection AddMapperServices(this IServiceCollection services)
     {
-        services.AddGenericImplementations(typeof(IMapper<,>));
+        return services.AddGenericImplementations(typeof(IMapper<,>));
     }
 
-    private static void AddGenericImplementations(this IServiceCollection services, Type openGenericServiceType)
+    private static IServiceCollection AddGenericImplementations(this IServiceCollection services, Type openGenericServiceType)
     {
         var applicationAssembly = typeof(ServiceRegistrator).Assembly;
-
         foreach (var implementationType in applicationAssembly.DefinedTypes.Where(type => !type.IsAbstract && !type.IsInterface))
         {
             var serviceTypes = implementationType.ImplementedInterfaces.Where(serviceType =>
@@ -43,5 +42,6 @@ public static class ServiceRegistrator
                 services.AddScoped(serviceType, implementationType);
             }
         }
+        return services;
     }
 }

@@ -2,8 +2,7 @@
 
 public class LoginResponseDto
 {
-    public AppUserDto User { get; set; }
+    public AppUserDto User { get; set; } = default!;
     public string Token { get; set; } = default!;
-    public string Role { get; set; }
     public DateTime Expiration { get; set; }
 }
