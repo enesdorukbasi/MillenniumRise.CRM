@@ -1,6 +1,7 @@
 using Application.Features.UploadedFileFeature.Commands.Delete;
 using Application.Features.UploadedFileFeature.Commands.Upload;
 using Application.Features.UploadedFileFeature.Commands.UploadMany;
+using Application.Features.UploadedFileFeature.Queries.GetById;
 using Application.Features.UploadedFileFeature.Queries.GetList;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -20,6 +21,13 @@ public sealed class UploadedFileController(ISender sender) : ControllerBase
     public async Task<IActionResult> GetList(CancellationToken cancellationToken)
     {
         var response = await sender.Send(new GetUploadedFileListQuery(), cancellationToken);
+        return ApiResultFactory.Success(response).ToActionResult();
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
+    {
+        var response = await sender.Send(new GetUploadedFileByIdQuery(id), cancellationToken);
         return ApiResultFactory.Success(response).ToActionResult();
     }
 

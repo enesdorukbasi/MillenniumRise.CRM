@@ -1,6 +1,7 @@
 using Application.Features.CustomerFeature.Commands.Create;
 using Application.Features.CustomerFeature.Commands.Delete;
 using Application.Features.CustomerFeature.Commands.Update;
+using Application.Features.CustomerFeature.Queries.GetById;
 using Application.Features.CustomerFeature.Queries.GetList;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -19,6 +20,13 @@ public sealed class CustomerController(ISender sender) : ControllerBase
     public async Task<IActionResult> GetList([FromQuery] GetCustomerListQuery query, CancellationToken cancellationToken)
     {
         var response = await sender.Send(query, cancellationToken);
+        return ApiResultFactory.Success(response).ToActionResult();
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
+    {
+        var response = await sender.Send(new GetCustomerByIdQuery(id), cancellationToken);
         return ApiResultFactory.Success(response).ToActionResult();
     }
 

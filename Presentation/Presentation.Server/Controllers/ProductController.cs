@@ -1,6 +1,7 @@
 using Application.Features.ProductFeature.Commands.Create;
 using Application.Features.ProductFeature.Commands.Delete;
 using Application.Features.ProductFeature.Commands.Update;
+using Application.Features.ProductFeature.Queries.GetById;
 using Application.Features.ProductFeature.Queries.GetList;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -19,6 +20,13 @@ public sealed class ProductController(ISender sender) : ControllerBase
     public async Task<IActionResult> GetList(CancellationToken cancellationToken)
     {
         var response = await sender.Send(new GetProductListQuery(), cancellationToken);
+        return ApiResultFactory.Success(response).ToActionResult();
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
+    {
+        var response = await sender.Send(new GetProductByIdQuery(id), cancellationToken);
         return ApiResultFactory.Success(response).ToActionResult();
     }
 
