@@ -16,9 +16,9 @@ namespace Presentation.Server.Controllers;
 public sealed class CustomerController(ISender sender) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetList(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetList([FromQuery] GetCustomerListQuery query, CancellationToken cancellationToken)
     {
-        var response = await sender.Send(new GetCustomerListQuery(), cancellationToken);
+        var response = await sender.Send(query, cancellationToken);
         return ApiResultFactory.Success(response).ToActionResult();
     }
 
