@@ -14,6 +14,10 @@ internal sealed class UploadedFileConfiguration : IEntityTypeConfiguration<Uploa
             .HasMaxLength(255)
             .IsRequired();
 
+        builder.Property(file => file.OriginalFileName)
+            .HasMaxLength(255)
+            .IsRequired();
+
         builder.Property(file => file.Extension)
             .HasMaxLength(32)
             .IsRequired();
@@ -23,6 +27,7 @@ internal sealed class UploadedFileConfiguration : IEntityTypeConfiguration<Uploa
             .IsRequired();
 
         builder.Property(file => file.ContentType)
-            .HasMaxLength(255);
+            .HasMaxLength(255)
+            .IsRequired();
     }
 }

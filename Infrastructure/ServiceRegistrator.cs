@@ -1,6 +1,8 @@
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Authentication.Models;
+using Application.Abstractions.FileUploader;
 using Infrastructure.Authentication;
+using Infrastructure.FileUploader;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +23,7 @@ public static class ServiceRegistrator
     {
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IFileService, FileService>();
         return services;
     }
     private static IServiceCollection AddJwtServices(this IServiceCollection services, IConfiguration configuration)
