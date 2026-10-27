@@ -119,10 +119,28 @@ public sealed class FileService : IFileService
         ArgumentNullException.ThrowIfNull(files);
 
         var uploadedFiles = new List<UploadedFile>();
-        foreach (var file in files)
+        try
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            uploadedFiles.Add(await UploadAsync(file, cancellationToken));
+            foreach (var file in files)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                uploadedFiles.Add(await UploadAsync(file, cancellationToken));
+            }
+        }
+        catch
+        {
+            foreach (var uploadedFile in uploadedFiles)
+            {
+                try
+                {
+                    await DeleteAsync(uploadedFile.Url, CancellationToken.None);
+                }
+                catch
+                {
+                }
+            }
+
+            throw;
         }
 
         return uploadedFiles;
