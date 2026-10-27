@@ -7,7 +7,7 @@ using Domain.Entities;
 using Domain.Exceptions;
 using MediatR;
 
-namespace Application.Features.AppUserFeature.Commands;
+namespace Application.Features.AppUserFeature.Commands.Login;
 
 public sealed class LoginCommandHandler(IRepository<AppUser> appUserRepository, IPasswordHasher passwordHasher, IJwtTokenGenerator jwtTokenGenerator, IValidator<LoginCommand> validator, IMapper<AppUser, AppUserDto> appUserMapper) : IRequestHandler<LoginCommand, LoginResponseDto>
 {

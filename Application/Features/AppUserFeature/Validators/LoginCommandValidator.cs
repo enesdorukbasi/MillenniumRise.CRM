@@ -1,6 +1,6 @@
 using Application.Common.Validators;
 using Application.Extensions;
-using Application.Features.AppUserFeature.Commands;
+using Application.Features.AppUserFeature.Commands.Login;
 
 namespace Application.Features.AppUserFeature.Validators;
 

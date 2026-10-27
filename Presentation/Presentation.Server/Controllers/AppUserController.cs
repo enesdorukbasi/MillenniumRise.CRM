@@ -1,4 +1,4 @@
-using Application.Features.AppUserFeature.Commands;
+using Application.Features.AppUserFeature.Commands.Login;
 using Application.Features.AppUserFeature.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

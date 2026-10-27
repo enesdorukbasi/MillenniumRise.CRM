@@ -16,7 +16,7 @@ public static class StringExtension
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static bool IsNullOrEmpty(this string value)
+    public static bool IsNullOrEmpty(this string? value)
     {
         return string.IsNullOrWhiteSpace(value);
     }
@@ -26,7 +26,7 @@ public static class StringExtension
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static bool IsNotNullOrEmpty(this string value)
+    public static bool IsNotNullOrEmpty(this string? value)
     {
         return !string.IsNullOrWhiteSpace(value);
     }
@@ -36,9 +36,9 @@ public static class StringExtension
     /// </summary>
     /// <param name="email"></param>
     /// <returns></returns>
-    public static bool IsValidEmail(this string email)
+    public static bool IsValidEmail(this string? email)
     {
-        if (email.IsNullOrEmpty())
+        if (string.IsNullOrWhiteSpace(email))
             return false;
 
         return EmailRegex.IsMatch(email);
@@ -49,7 +49,7 @@ public static class StringExtension
     /// </summary>
     /// <param name="phoneNumber"></param>
     /// <returns></returns>
-    public static bool IsValidPhoneNumber(this string phoneNumber)
+    public static bool IsValidPhoneNumber(this string? phoneNumber)
     {
         var normalizedPhoneNumber = phoneNumber.NormalizePhoneNumber();
         return normalizedPhoneNumber is not null && InternationalPhoneNumberRegex.IsMatch(normalizedPhoneNumber);
@@ -90,9 +90,9 @@ public static class StringExtension
     /// </summary>
     /// <param name="url"></param>
     /// <returns></returns>
-    public static bool IsValidUrl(this string url)
+    public static bool IsValidUrl(this string? url)
     {
-        if (url.IsNullOrEmpty())
+        if (string.IsNullOrWhiteSpace(url))
             return false;
 
         return UrlRegex.IsMatch(url);
@@ -144,9 +144,9 @@ public static class StringExtension
     /// <param name="text"></param>
     /// <param name="maxLength"></param>
     /// <returns></returns>
-    public static bool MaxLengthControl(this string text, int maxLength)
+    public static bool MaxLengthControl(this string? text, int maxLength)
     {
-        return text.Length <= maxLength;
+        return text is not null && text.Length <= maxLength;
     }
 
     /// <summary>
