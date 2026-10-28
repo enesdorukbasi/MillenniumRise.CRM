@@ -25,7 +25,7 @@
 .sidebar--collapsed .sidebar__collapse { justify-content: center; padding-inline: 0; }
 .admin-main { min-width: 0; padding-left: 15.5rem; transition: padding-left .2s ease; width: 100%; }
 .admin-main--sidebar-collapsed { padding-left: 4.75rem; }
-.topbar { align-items: center; background: #fff; border-bottom: 1px solid var(--color-border); display: flex; gap: 1rem; height: 4.25rem; padding: 0 1.6rem; position: sticky; top: 0; z-index: 40; }
+.topbar { align-items: center; background: var(--color-surface); border-bottom: 1px solid var(--color-border); display: flex; gap: 1rem; height: 4.25rem; padding: 0 1.6rem; position: sticky; top: 0; z-index: 40; }
 .topbar__menu { display: none; }
 .topbar__spacer { flex: 1; }
 .page-content { margin: 0 auto; max-width: 105rem; padding: 1.6rem; }

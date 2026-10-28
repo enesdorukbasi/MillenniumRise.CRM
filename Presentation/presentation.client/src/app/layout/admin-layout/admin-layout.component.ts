@@ -4,6 +4,7 @@ import { filter } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { AuthSessionService } from '../../core/auth/auth-session.service';
 import { ProgramConfigurationService } from '../../core/configuration/program-configuration.service';
+import { ThemePreference, ThemeService } from '../../core/theme/theme.service';
 import { IconName } from '../../shared/components/icon/icon.component';
 
 interface NavigationItem { label: string; path: string; icon: IconName; }
@@ -11,6 +12,7 @@ interface NavigationItem { label: string; path: string; icon: IconName; }
 @Component({ selector: 'app-admin-layout', templateUrl: './admin-layout.component.html', styleUrl: './admin-layout.component.css', standalone: false })
 export class AdminLayoutComponent implements OnInit, OnDestroy {
   private readonly programConfigurationService = inject(ProgramConfigurationService);
+  private readonly themeService = inject(ThemeService);
   private readonly dateTimeFormatter = new Intl.DateTimeFormat('tr-TR', {
     day: '2-digit',
     month: 'long',
@@ -25,8 +27,11 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
   sidebarOpen = false;
   sidebarCollapsed = false;
   userMenuOpen = false;
+  themeMenuOpen = false;
   currentDateTime = this.dateTimeFormatter.format(new Date());
   readonly programConfiguration = this.programConfigurationService.configuration;
+  readonly themePreference = this.themeService.preference;
+  readonly resolvedTheme = this.themeService.resolvedTheme;
   readonly navigationItems: NavigationItem[] = [
     { label: 'Genel Bakış', path: '/dashboard', icon: 'dashboard' },
     { label: 'Müşteriler', path: '/customers', icon: 'customers' },
@@ -39,6 +44,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
       this.sidebarOpen = false;
       this.userMenuOpen = false;
+      this.themeMenuOpen = false;
     });
   }
 
@@ -82,6 +88,18 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     return `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`.toUpperCase();
   }
 
+  get themePreferenceLabel(): string {
+    if (this.themePreference() === 'dark') return 'Koyu';
+    if (this.themePreference() === 'light') return 'Açık';
+    return 'Sistem';
+  }
+
+  get themePreferenceIcon(): IconName {
+    if (this.themePreference() === 'dark') return 'moon';
+    if (this.themePreference() === 'light') return 'sun';
+    return 'monitor';
+  }
+
   toggleSidebar(): void {
     if (window.innerWidth <= 900) {
       this.sidebarCollapsed = false;
@@ -98,9 +116,26 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     this.userMenuOpen = !this.userMenuOpen;
   }
 
+  toggleThemeMenu(event: MouseEvent): void {
+    event.stopPropagation();
+    this.themeMenuOpen = !this.themeMenuOpen;
+  }
+
+  selectTheme(preference: ThemePreference, event: MouseEvent): void {
+    event.stopPropagation();
+    this.themeService.setPreference(preference);
+    this.themeMenuOpen = false;
+  }
+
+  toggleCollapsedTheme(event: MouseEvent): void {
+    event.stopPropagation();
+    this.themeService.toggleResolvedTheme();
+  }
+
   @HostListener('document:click')
   closeUserMenu(): void {
     this.userMenuOpen = false;
+    this.themeMenuOpen = false;
   }
 
   @HostListener('window:resize')

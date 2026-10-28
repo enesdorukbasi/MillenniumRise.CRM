@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProgramConfigurationService } from './core/configuration/program-configuration.service';
+import { ThemeService } from './core/theme/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -8,9 +9,13 @@ import { ProgramConfigurationService } from './core/configuration/program-config
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
-  constructor(private readonly programConfigurationService: ProgramConfigurationService) {}
+  constructor(
+    private readonly programConfigurationService: ProgramConfigurationService,
+    private readonly themeService: ThemeService
+  ) {}
 
   ngOnInit(): void {
+    this.themeService.initialize();
     this.programConfigurationService.get().subscribe({ error: () => undefined });
   }
 }

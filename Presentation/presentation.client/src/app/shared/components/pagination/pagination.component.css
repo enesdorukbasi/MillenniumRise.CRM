@@ -1,5 +1,5 @@
 .pagination { align-items: center; border-top: 1px solid var(--color-border); display: flex; gap: 1rem; justify-content: space-between; min-height: 3.65rem; padding: .7rem 1rem; }
 .pagination__summary, .pagination__page { color: var(--color-ink-500); font-size: .78rem; }
 .pagination__controls { align-items: center; display: flex; gap: .45rem; }
-.pagination__size { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: var(--color-ink-700); font: inherit; font-size: .78rem; height: 2.25rem; margin-left: .35rem; padding: 0 .55rem; }
+.pagination__size { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: var(--color-ink-700); font: inherit; font-size: .78rem; height: 2.25rem; margin-left: .35rem; padding: 0 .55rem; }
 @media (max-width: 560px) { .pagination { align-items: flex-start; flex-direction: column; } }

@@ -13,6 +13,21 @@
       <button class="sidebar__collapse" type="button" [attr.aria-label]="sidebarToggleLabel" [attr.aria-expanded]="sidebarExpanded" (click)="toggleSidebar()">
         <app-icon [name]="sidebarToggleIcon" [size]="18"></app-icon><span>{{ sidebarCollapsed ? 'Menüyü genişlet' : 'Menüyü daralt' }}</span>
       </button>
+      <div class="theme-control" [class.theme-control--open]="themeMenuOpen" (click)="$event.stopPropagation()">
+        <button class="theme-control__compact" type="button" [attr.aria-label]="resolvedTheme() === 'dark' ? 'Açık temaya geç' : 'Koyu temaya geç'" [title]="resolvedTheme() === 'dark' ? 'Açık temaya geç' : 'Koyu temaya geç'" (click)="toggleCollapsedTheme($event)">
+          <app-icon [name]="resolvedTheme() === 'dark' ? 'sun' : 'moon'" [size]="18"></app-icon>
+        </button>
+        <button class="theme-control__trigger" type="button" aria-haspopup="listbox" [attr.aria-expanded]="themeMenuOpen" (click)="toggleThemeMenu($event)">
+          <app-icon [name]="themePreferenceIcon" [size]="17"></app-icon>
+          <span><small>Tema</small><strong>{{ themePreferenceLabel }}</strong></span>
+          <app-icon class="theme-control__chevron" name="chevron-down" [size]="15"></app-icon>
+        </button>
+        <div class="theme-control__options" role="listbox" aria-label="Tema seçimi">
+          <button type="button" role="option" [attr.aria-selected]="themePreference() === 'light'" (click)="selectTheme('light', $event)"><app-icon name="sun" [size]="17"></app-icon><span>Açık</span><app-icon *ngIf="themePreference() === 'light'" name="check" [size]="15"></app-icon></button>
+          <button type="button" role="option" [attr.aria-selected]="themePreference() === 'dark'" (click)="selectTheme('dark', $event)"><app-icon name="moon" [size]="17"></app-icon><span>Koyu</span><app-icon *ngIf="themePreference() === 'dark'" name="check" [size]="15"></app-icon></button>
+          <button type="button" role="option" [attr.aria-selected]="themePreference() === 'system'" (click)="selectTheme('system', $event)"><app-icon name="monitor" [size]="17"></app-icon><span>Sistem</span><app-icon *ngIf="themePreference() === 'system'" name="check" [size]="15"></app-icon></button>
+        </div>
+      </div>
       <div class="sidebar__footer-divider"></div>
       <div class="sidebar__date"><app-icon name="calendar" [size]="16"></app-icon><span>{{ currentDateTime }}</span></div>
     </div>

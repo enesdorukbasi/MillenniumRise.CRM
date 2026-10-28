@@ -5,7 +5,7 @@ export type IconName =
   | 'menu' | 'logout' | 'calendar' | 'search' | 'plus' | 'edit' | 'trash' | 'close'
   | 'chevron-left' | 'chevron-right' | 'upload' | 'mail' | 'lock' | 'eye' | 'eye-off'
   | 'arrow-right' | 'refresh' | 'alert' | 'external' | 'settings' | 'image' | 'save' | 'chevron-down'
-  | 'chevrons-left' | 'chevrons-right';
+  | 'chevrons-left' | 'chevrons-right' | 'sun' | 'moon' | 'monitor' | 'check';
 
 @Component({
   selector: 'app-icon',
