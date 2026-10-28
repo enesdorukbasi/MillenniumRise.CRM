@@ -1,0 +1,4 @@
+<header class="page-header">
+  <div><h1>{{ title }}</h1><p *ngIf="description">{{ description }}</p></div>
+  <button *ngIf="actionLabel" class="button button--primary" type="button" (click)="action.emit()"><app-icon name="plus" [size]="18"></app-icon>{{ actionLabel }}</button>
+</header>

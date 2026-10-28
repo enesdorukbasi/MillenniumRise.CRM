@@ -1,0 +1,24 @@
+<div class="admin-shell">
+  <div *ngIf="sidebarOpen" class="sidebar-overlay" (click)="sidebarOpen = false"></div>
+  <aside class="sidebar" [class.sidebar--open]="sidebarOpen">
+    <a class="sidebar__brand" routerLink="/dashboard" aria-label="Millennium Rise ana sayfa"><app-brand-mark [inverse]="true"></app-brand-mark></a>
+    <nav class="sidebar__nav" aria-label="Ana menü">
+      <a *ngFor="let item of navigationItems" [routerLink]="item.path" routerLinkActive="sidebar__link--active" class="sidebar__link">
+        <app-icon [name]="item.icon" [size]="20"></app-icon><span>{{ item.label }}</span>
+      </a>
+    </nav>
+    <div class="sidebar__footer"><span class="sidebar__footer-label">Yönetim Paneli</span><span>Millennium Rise CRM</span></div>
+  </aside>
+
+  <section class="admin-main">
+    <header class="topbar">
+      <button class="icon-button topbar__menu" type="button" aria-label="Menüyü aç" (click)="sidebarOpen = !sidebarOpen"><app-icon name="menu" [size]="21"></app-icon></button>
+      <div class="topbar__spacer"></div>
+      <div class="topbar__date"><app-icon name="calendar" [size]="17"></app-icon><span>{{ currentDate }}</span></div>
+      <div class="topbar__divider"></div>
+      <div class="topbar__user"><span class="topbar__avatar">{{ (session.user?.fullName || 'A').charAt(0).toUpperCase() }}</span><span class="topbar__user-name">{{ session.user?.fullName || 'Admin' }}</span></div>
+      <button class="topbar__logout" type="button" (click)="logout()"><app-icon name="logout" [size]="18"></app-icon><span>Çıkış Yap</span></button>
+    </header>
+    <main class="page-content"><router-outlet></router-outlet></main>
+  </section>
+</div>

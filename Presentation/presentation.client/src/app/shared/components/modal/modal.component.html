@@ -1,0 +1,6 @@
+<div *ngIf="open" class="modal-backdrop" (mousedown)="closed.emit()">
+  <section class="modal" [class]="'modal modal--' + size" role="dialog" aria-modal="true" [attr.aria-label]="title" (mousedown)="$event.stopPropagation()">
+    <header class="modal__header"><h2>{{ title }}</h2><button class="icon-button" type="button" aria-label="Pencereyi kapat" (click)="closed.emit()"><app-icon name="close" [size]="19"></app-icon></button></header>
+    <div class="modal__body"><ng-content></ng-content></div>
+  </section>
+</div>

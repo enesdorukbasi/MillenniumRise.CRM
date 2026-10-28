@@ -1,7 +1,9 @@
 using System.Diagnostics;
 using Application;
+using Application.Abstractions.Persistence.Seeders.Models;
 using Infrastructure;
 using Infrastructure.Persistence;
+using Infrastructure.Persistence.Extensions;
 using Presentation.Server.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,8 @@ builder.Services
     .AddApplicationServices()
     .AddInfrastructureServices(builder.Configuration)
     .AddPersistenceServices(builder.Configuration);
+
+builder.Services.Configure<AdminUserSettings>(builder.Configuration.GetRequiredSection(AdminUserSettings.SectionName));
 
 builder.Services.AddControllers();
 builder.Services.AddProblemDetails(options =>
@@ -25,6 +29,8 @@ builder.Services.AddExceptionHandler<ExceptionHandler>();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+await app.Services.SeedAdminUserAsync();
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();

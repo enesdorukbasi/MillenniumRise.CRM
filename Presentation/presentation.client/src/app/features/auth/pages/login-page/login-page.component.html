@@ -1,0 +1,27 @@
+<main class="login-shell">
+  <section class="login-context" aria-hidden="true">
+    <app-brand-mark [inverse]="true"></app-brand-mark>
+    <div class="network-motif">
+      <span class="network-motif__orbit network-motif__orbit--one"></span><span class="network-motif__orbit network-motif__orbit--two"></span>
+      <span class="network-motif__line network-motif__line--one"></span><span class="network-motif__line network-motif__line--two"></span>
+      <span class="network-motif__node network-motif__node--center"><app-icon name="customers" [size]="32"></app-icon></span>
+      <span class="network-motif__node network-motif__node--top"><app-icon name="products" [size]="23"></app-icon></span>
+      <span class="network-motif__node network-motif__node--right"><app-icon name="interactions" [size]="23"></app-icon></span>
+      <span class="network-motif__node network-motif__node--bottom"><app-icon name="customer-products" [size]="23"></app-icon></span>
+    </div>
+  </section>
+  <section class="login-form-region">
+    <div class="login-card">
+      <app-brand-mark class="login-card__brand"></app-brand-mark>
+      <h1>Yönetim paneline giriş</h1>
+      <p class="login-card__description">Müşteri ilişkilerinizi yönetmek için hesabınızla giriş yapın.</p>
+      <div *ngIf="errorMessage" class="alert alert--danger" role="alert"><app-icon name="alert" [size]="18"></app-icon><span>{{ errorMessage }}</span></div>
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <label class="field"><span class="field__label">E-posta adresi</span><span class="input-shell" [class.input-shell--invalid]="form.controls.email.touched && form.controls.email.invalid"><app-icon name="mail" [size]="19"></app-icon><input type="email" formControlName="email" autocomplete="email" placeholder="admin@crm.com"></span><span class="field__error" *ngIf="form.controls.email.touched && form.controls.email.invalid">Geçerli bir e-posta adresi girin.</span></label>
+        <label class="field"><span class="field__label">Parola</span><span class="input-shell" [class.input-shell--invalid]="form.controls.password.touched && form.controls.password.invalid"><app-icon name="lock" [size]="19"></app-icon><input [type]="passwordVisible ? 'text' : 'password'" formControlName="password" autocomplete="current-password" placeholder="Parolanız"><button class="input-shell__action" type="button" [attr.aria-label]="passwordVisible ? 'Parolayı gizle' : 'Parolayı göster'" (click)="passwordVisible = !passwordVisible"><app-icon [name]="passwordVisible ? 'eye-off' : 'eye'" [size]="19"></app-icon></button></span><span class="field__error" *ngIf="form.controls.password.touched && form.controls.password.invalid">Parola zorunludur.</span></label>
+        <button class="button button--primary login-card__submit" type="submit" [disabled]="loading"><span>{{ loading ? 'Giriş yapılıyor...' : 'Giriş Yap' }}</span><app-icon *ngIf="!loading" name="arrow-right" [size]="19"></app-icon></button>
+      </form>
+      <div class="secure-note"><app-icon name="lock" [size]="15"></app-icon> Güvenli yönetim erişimi</div>
+    </div>
+  </section>
+</main>

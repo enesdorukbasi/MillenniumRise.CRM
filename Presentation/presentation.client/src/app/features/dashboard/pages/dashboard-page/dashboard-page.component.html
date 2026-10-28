@@ -1,0 +1,35 @@
+<app-page-header title="Genel Bakış" description="Müşteri ilişkilerinizin güncel durumunu tek ekrandan takip edin."></app-page-header>
+
+<div *ngIf="loading" class="panel state-panel"><span class="spinner"></span><p>Dashboard verileri yükleniyor...</p></div>
+<div *ngIf="!loading && errorMessage" class="panel state-panel"><app-icon name="alert" [size]="28"></app-icon><h3>Veriler yüklenemedi</h3><p>{{ errorMessage }}</p><button class="button button--secondary" type="button" (click)="load()"><app-icon name="refresh" [size]="17"></app-icon>Tekrar Dene</button></div>
+
+<ng-container *ngIf="!loading && !errorMessage">
+  <section class="summary-grid" aria-label="Dashboard özeti">
+    <article *ngFor="let card of summaryCards" class="summary-card" [class.summary-card--urgent]="card.urgent">
+      <span class="summary-card__icon"><app-icon [name]="card.icon" [size]="25"></app-icon></span>
+      <div><span class="summary-card__label">{{ card.label }}</span><strong>{{ card.value }}</strong></div>
+    </article>
+  </section>
+
+  <section class="panel dashboard-panel">
+    <header class="dashboard-panel__header"><div><h2>Yaklaşan Takipler</h2><p>Önümüzdeki yedi gün içinde planlanan müşteri takipleri.</p></div><a routerLink="/customer-products">Tümünü Gör <app-icon name="chevron-right" [size]="16"></app-icon></a></header>
+    <div *ngIf="!followUps?.items?.length" class="state-panel state-panel--compact"><h3>Yaklaşan takip bulunmuyor</h3><p>Planlanan takipler burada görüntülenecek.</p></div>
+    <div *ngIf="followUps?.items?.length" class="table-wrap">
+      <table class="data-table"><thead><tr><th>Müşteri</th><th>Ürün</th><th>Durum</th><th>Takip Tarihi</th><th></th></tr></thead>
+        <tbody><tr *ngFor="let item of followUps?.items"><td><span class="table-primary">{{ item.customer.fullName }}</span><span class="table-secondary">{{ item.customer.companyName || item.customer.email || '—' }}</span></td><td>{{ item.product.name }}</td><td><span class="status" [ngClass]="statusClass(item.status)">{{ statusLabels[item.status] }}</span></td><td>{{ item.nextFollowUpAt | date:'dd.MM.yyyy HH:mm' }}</td><td><a class="row-link" routerLink="/customer-products">Görüntüle</a></td></tr></tbody>
+      </table>
+    </div>
+    <app-pagination *ngIf="followUps" [pageNumber]="followUps.pageNumber" [pageSize]="followUps.pageSize" [totalCount]="followUps.totalCount" [totalPages]="followUps.totalPages" (pageChange)="changeFollowUpPage($event)"></app-pagination>
+  </section>
+
+  <section class="panel dashboard-panel">
+    <header class="dashboard-panel__header"><div><h2>Son Etkileşimler</h2><p>En güncel müşteri görüşmeleri ve notları.</p></div><a routerLink="/interactions">Tümünü Gör <app-icon name="chevron-right" [size]="16"></app-icon></a></header>
+    <div *ngIf="!interactions?.items?.length" class="state-panel state-panel--compact"><h3>Henüz etkileşim bulunmuyor</h3><p>Yeni etkileşimler burada görüntülenecek.</p></div>
+    <div *ngIf="interactions?.items?.length" class="table-wrap">
+      <table class="data-table"><thead><tr><th>Müşteri</th><th>Kanal</th><th>Not</th><th>Tarih</th></tr></thead>
+        <tbody><tr *ngFor="let item of interactions?.items"><td><span class="table-primary">{{ item.customerProduct.customer.fullName }}</span><span class="table-secondary">{{ item.customerProduct.product.name }}</span></td><td>{{ channelLabels[item.channel] }}</td><td class="note-cell">{{ item.notes }}</td><td>{{ (item.occurredAt || item.scheduledAt || item.createdAt) | date:'dd.MM.yyyy HH:mm' }}</td></tr></tbody>
+      </table>
+    </div>
+    <app-pagination *ngIf="interactions" [pageNumber]="interactions.pageNumber" [pageSize]="interactions.pageSize" [totalCount]="interactions.totalCount" [totalPages]="interactions.totalPages" (pageChange)="changeInteractionPage($event)"></app-pagination>
+  </section>
+</ng-container>

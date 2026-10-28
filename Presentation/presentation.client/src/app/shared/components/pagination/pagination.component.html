@@ -1,0 +1,11 @@
+<div class="pagination" *ngIf="totalCount > 0">
+  <span class="pagination__summary">Toplam {{ totalCount }} kayıt</span>
+  <div class="pagination__controls">
+    <button class="icon-button" type="button" aria-label="Önceki sayfa" [disabled]="pageNumber <= 1" (click)="previous()"><app-icon name="chevron-left" [size]="18"></app-icon></button>
+    <span class="pagination__page">{{ pageNumber }} / {{ totalPages || 1 }}</span>
+    <button class="icon-button" type="button" aria-label="Sonraki sayfa" [disabled]="pageNumber >= totalPages" (click)="next()"><app-icon name="chevron-right" [size]="18"></app-icon></button>
+    <select class="pagination__size" [value]="pageSize" (change)="pageSizeChange.emit(+$any($event.target).value)" aria-label="Sayfa boyutu">
+      <option [value]="10">10 / sayfa</option><option [value]="20">20 / sayfa</option><option [value]="50">50 / sayfa</option><option [value]="100">100 / sayfa</option>
+    </select>
+  </div>
+</div>

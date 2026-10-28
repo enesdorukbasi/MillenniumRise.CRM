@@ -1,0 +1,38 @@
+<app-page-header title="Müşteriler" description="Müşteri kayıtlarını yönetin, arayın ve güncelleyin." actionLabel="Yeni Müşteri" (action)="openCreate()"></app-page-header>
+<section class="panel">
+  <form class="toolbar" [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+    <label class="search-box"><app-icon name="search" [size]="18"></app-icon><input formControlName="search" placeholder="Ad, şirket, e-posta veya telefon ara"></label>
+    <select class="select-control filter-select" formControlName="customerType"><option [ngValue]="null">Tüm müşteri tipleri</option><option *ngFor="let type of customerTypes" [ngValue]="type">{{ customerTypeLabels[type] }}</option></select>
+    <select class="select-control filter-select" formControlName="sortBy"><option [ngValue]="sortFields.FullName">Ada göre</option><option [ngValue]="sortFields.CompanyName">Şirkete göre</option><option [ngValue]="sortFields.CreatedAt">Oluşturma tarihine göre</option></select>
+    <select class="select-control filter-select" formControlName="sortDirection"><option [ngValue]="sortDirections.Ascending">Artan</option><option [ngValue]="sortDirections.Descending">Azalan</option></select>
+    <button class="button button--secondary" type="submit">Filtrele</button>
+  </form>
+  <div *ngIf="loading" class="state-panel"><span class="spinner"></span><p>Müşteriler yükleniyor...</p></div>
+  <div *ngIf="!loading && errorMessage" class="state-panel"><app-icon name="alert" [size]="28"></app-icon><h3>Müşteriler yüklenemedi</h3><p>{{ errorMessage }}</p><button class="button button--secondary" (click)="load()">Tekrar Dene</button></div>
+  <div *ngIf="!loading && !errorMessage && !result?.items?.length" class="state-panel"><app-icon name="customers" [size]="32"></app-icon><h3>Müşteri bulunamadı</h3><p>Filtrelerinizi değiştirin veya ilk müşteri kaydını oluşturun.</p></div>
+  <div *ngIf="!loading && result?.items?.length" class="table-wrap"><table class="data-table"><thead><tr><th>Müşteri</th><th>İletişim</th><th>Tip</th><th>Sektör</th><th>Konum</th><th></th></tr></thead><tbody>
+    <tr *ngFor="let customer of result?.items"><td><span class="table-primary">{{ customer.fullName }}</span><span class="table-secondary">{{ customer.companyName || 'Bireysel müşteri' }}</span></td><td>{{ customer.email || customer.phoneNumber || '—' }}<span *ngIf="customer.email && customer.phoneNumber" class="table-secondary">{{ customer.phoneNumber }}</span></td><td><span class="status status--info">{{ customerTypeLabels[customer.customerType] }}</span></td><td>{{ customer.sector || '—' }}</td><td>{{ customer.location || '—' }}</td><td><div class="table-actions"><button class="icon-button" title="Düzenle" (click)="openEdit(customer)"><app-icon name="edit" [size]="16"></app-icon></button><button class="icon-button delete-action" title="Sil" (click)="askDelete(customer)"><app-icon name="trash" [size]="16"></app-icon></button></div></td></tr>
+  </tbody></table></div>
+  <app-pagination *ngIf="result" [pageNumber]="result.pageNumber" [pageSize]="result.pageSize" [totalCount]="result.totalCount" [totalPages]="result.totalPages" (pageChange)="changePage($event)" (pageSizeChange)="changePageSize($event)"></app-pagination>
+</section>
+
+<app-modal [open]="formOpen" [title]="selectedCustomer ? 'Müşteriyi Düzenle' : 'Yeni Müşteri'" size="large" (closed)="formOpen = false">
+  <div *ngIf="formError" class="alert alert--danger">{{ formError }}</div>
+  <form [formGroup]="customerForm" (ngSubmit)="save()"><div class="form-grid">
+    <label class="field"><span class="field__label">Ad Soyad *</span><input class="input-control" formControlName="fullName"><span *ngIf="customerForm.controls.fullName.touched && customerForm.controls.fullName.invalid" class="field__error">Ad soyad zorunludur.</span></label>
+    <label class="field"><span class="field__label">Şirket Adı</span><input class="input-control" formControlName="companyName"></label>
+    <label class="field"><span class="field__label">Müşteri Tipi *</span><select class="select-control" formControlName="customerType"><option *ngFor="let type of customerTypes" [ngValue]="type">{{ customerTypeLabels[type] }}</option></select></label>
+    <label class="field"><span class="field__label">Sektör</span><input class="input-control" formControlName="sector"></label>
+    <label class="field"><span class="field__label">E-posta</span><input class="input-control" type="email" formControlName="email"><span *ngIf="customerForm.controls.email.touched && customerForm.controls.email.invalid" class="field__error">Geçerli bir e-posta girin.</span></label>
+    <label class="field"><span class="field__label">Telefon</span><input class="input-control" formControlName="phoneNumber"></label>
+    <label class="field"><span class="field__label">Web Sitesi</span><input class="input-control" formControlName="website" placeholder="https://"></label>
+    <label class="field"><span class="field__label">Kaynak Adresi</span><input class="input-control" formControlName="sourceUrl" placeholder="https://"></label>
+    <label class="field form-grid__full"><span class="field__label">Konum</span><input class="input-control" formControlName="location"></label>
+    <label class="field form-grid__full"><span class="field__label">Not</span><textarea class="textarea-control" rows="4" formControlName="note"></textarea></label>
+  </div><div class="form-actions"><button class="button button--secondary" type="button" (click)="formOpen = false">Vazgeç</button><button class="button button--primary" type="submit" [disabled]="saving">{{ saving ? 'Kaydediliyor...' : 'Kaydet' }}</button></div></form>
+</app-modal>
+
+<app-modal [open]="deleteOpen" title="Müşteriyi Sil" size="small" (closed)="deleteOpen = false">
+  <div *ngIf="formError" class="alert alert--danger">{{ formError }}</div><p class="confirm-text"><strong>{{ customerToDelete?.fullName }}</strong> kaydını silmek istediğinize emin misiniz? İlişkili müşteri ürünleri de silinebilir.</p>
+  <div class="form-actions"><button class="button button--secondary" (click)="deleteOpen = false">Vazgeç</button><button class="button button--danger" [disabled]="saving" (click)="confirmDelete()">Sil</button></div>
+</app-modal>

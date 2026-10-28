@@ -1,0 +1,14 @@
+.brand {
+  align-items: center;
+  color: var(--color-primary-600);
+  display: inline-flex;
+  font-size: 1.08rem;
+  font-weight: 760;
+  gap: .7rem;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+}
+
+.brand--inverse { color: #fff; }
+.brand__symbol { color: var(--color-primary-500); flex: 0 0 auto; height: 1.75rem; width: 2.2rem; }
+.brand--compact .brand__symbol { height: 1.55rem; width: 1.95rem; }

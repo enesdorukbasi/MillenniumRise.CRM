@@ -1,0 +1,59 @@
+<app-page-header title="Dosyalar" description="CRM içerisinde kullanılan görsel ve belgeleri yönetin." actionLabel="Dosya Yükle" (action)="openUpload()"></app-page-header>
+
+<section class="panel">
+  <form class="toolbar" [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+    <label class="search-box"><app-icon name="search" [size]="18"></app-icon><input formControlName="search" placeholder="Dosya adı ara"></label>
+    <input class="input-control filter-input" formControlName="extension" placeholder="Uzantı (png, pdf)">
+    <input class="input-control filter-input" formControlName="contentType" placeholder="İçerik tipi">
+    <select class="select-control filter-select" formControlName="sortBy">
+      <option [ngValue]="sortFields.CreatedAt">Yükleme tarihine göre</option>
+      <option [ngValue]="sortFields.OriginalFileName">Dosya adına göre</option>
+      <option [ngValue]="sortFields.FileSize">Boyuta göre</option>
+    </select>
+    <select class="select-control filter-select" formControlName="sortDirection">
+      <option [ngValue]="sortDirections.Descending">Azalan</option>
+      <option [ngValue]="sortDirections.Ascending">Artan</option>
+    </select>
+    <button class="button button--secondary" type="submit">Filtrele</button>
+  </form>
+
+  <div *ngIf="loading" class="state-panel"><span class="spinner"></span><p>Dosyalar yükleniyor...</p></div>
+  <div *ngIf="!loading && errorMessage" class="state-panel"><app-icon name="alert" [size]="28"></app-icon><h3>Dosyalar yüklenemedi</h3><p>{{ errorMessage }}</p><button class="button button--secondary" (click)="load()">Tekrar Dene</button></div>
+  <div *ngIf="!loading && !errorMessage && !result?.items?.length" class="state-panel"><app-icon name="files" [size]="32"></app-icon><h3>Dosya bulunamadı</h3><p>İlk dosyanızı yükleyerek başlayın.</p></div>
+
+  <div *ngIf="!loading && result?.items?.length" class="table-wrap">
+    <table class="data-table">
+      <thead><tr><th>Dosya</th><th>Tür</th><th>Boyut</th><th>Ölçüler</th><th>Yüklenme</th><th></th></tr></thead>
+      <tbody>
+        <tr *ngFor="let file of result?.items">
+          <td><div class="file-cell"><span class="file-preview"><img *ngIf="file.contentType.startsWith('image/')" [src]="file.url" alt=""><app-icon *ngIf="!file.contentType.startsWith('image/')" name="files" [size]="18"></app-icon></span><div><a class="table-primary file-link" [href]="file.url" target="_blank" rel="noopener">{{ file.originalFileName }}</a><span class="table-secondary">{{ file.name }}</span></div></div></td>
+          <td><span class="status status--neutral">{{ file.extension }}</span><span class="table-secondary">{{ file.contentType }}</span></td>
+          <td>{{ formatFileSize(file.fileSize) }}</td>
+          <td>{{ file.width && file.height ? file.width + ' × ' + file.height : '—' }}</td>
+          <td>{{ file.createdAt | date:'dd.MM.yyyy HH:mm' }}</td>
+          <td><div class="table-actions"><a class="icon-button" title="Dosyayı aç" [href]="file.url" target="_blank" rel="noopener"><app-icon name="external" [size]="16"></app-icon></a><button class="icon-button delete-action" title="Sil" (click)="askDelete(file)"><app-icon name="trash" [size]="16"></app-icon></button></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <app-pagination *ngIf="result" [pageNumber]="result.pageNumber" [pageSize]="result.pageSize" [totalCount]="result.totalCount" [totalPages]="result.totalPages" (pageChange)="changePage($event)" (pageSizeChange)="changePageSize($event)"></app-pagination>
+</section>
+
+<app-modal [open]="uploadOpen" title="Dosya Yükle" (closed)="uploadOpen = false">
+  <div *ngIf="formError" class="alert alert--danger">{{ formError }}</div>
+  <label class="upload-area">
+    <app-icon name="upload" [size]="28"></app-icon>
+    <strong>Yüklenecek dosyaları seçin</strong>
+    <span>Tek seferde bir veya birden fazla dosya yükleyebilirsiniz.</span>
+    <input type="file" multiple (change)="selectFiles($event)">
+  </label>
+  <div *ngIf="selectedFiles.length" class="selected-files"><strong>{{ selectedFiles.length }} dosya seçildi</strong><span *ngFor="let file of selectedFiles">{{ file.name }} · {{ formatFileSize(file.size) }}</span></div>
+  <div class="form-actions"><button class="button button--secondary" type="button" (click)="uploadOpen = false">Vazgeç</button><button class="button button--primary" type="button" [disabled]="!selectedFiles.length || saving" (click)="upload()">{{ saving ? 'Yükleniyor...' : 'Yükle' }}</button></div>
+</app-modal>
+
+<app-modal [open]="deleteOpen" title="Dosyayı Sil" size="small" (closed)="deleteOpen = false">
+  <div *ngIf="formError" class="alert alert--danger">{{ formError }}</div>
+  <p class="confirm-text"><strong>{{ fileToDelete?.originalFileName }}</strong> dosyasını silmek istediğinize emin misiniz?</p>
+  <div class="form-actions"><button class="button button--secondary" (click)="deleteOpen = false">Vazgeç</button><button class="button button--danger" [disabled]="saving" (click)="confirmDelete()">Sil</button></div>
+</app-modal>
