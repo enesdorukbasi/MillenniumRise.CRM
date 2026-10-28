@@ -6,10 +6,14 @@
   font-weight: 760;
   gap: .7rem;
   letter-spacing: -.02em;
-  white-space: nowrap;
+  line-height: 1.15;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .brand--inverse { color: #fff; }
+.brand span { min-width: 0; overflow-wrap: anywhere; white-space: normal; }
+.brand--nowrap span { overflow: hidden; overflow-wrap: normal; text-overflow: ellipsis; white-space: nowrap; }
 .brand__symbol { color: var(--color-primary-500); flex: 0 0 auto; height: 1.75rem; width: 2.2rem; }
 .brand__image { background: #fff; border-radius: .42rem; flex: 0 0 auto; height: 2rem; object-fit: contain; padding: .15rem; width: 2rem; }
 .brand--compact .brand__symbol { height: 1.55rem; width: 1.95rem; }

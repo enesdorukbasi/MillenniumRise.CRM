@@ -22,6 +22,11 @@ export class ProgramConfigurationService {
         if (response.data) {
           this.configurationState.set(response.data);
           this.document.title = response.data.name;
+          const favicon = this.document.getElementById('app-favicon') as HTMLLinkElement | null;
+          if (favicon) {
+            favicon.href = response.data.logo?.url ?? '/favicon.ico';
+            favicon.type = response.data.logo?.contentType ?? 'image/x-icon';
+          }
         }
       })
     );
@@ -33,6 +38,11 @@ export class ProgramConfigurationService {
         if (response.data) {
           this.configurationState.set(response.data);
           this.document.title = response.data.name;
+          const favicon = this.document.getElementById('app-favicon') as HTMLLinkElement | null;
+          if (favicon) {
+            favicon.href = response.data.logo?.url ?? '/favicon.ico';
+            favicon.type = response.data.logo?.contentType ?? 'image/x-icon';
+          }
         }
       })
     );

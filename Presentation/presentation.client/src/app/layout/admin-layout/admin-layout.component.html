@@ -1,25 +1,51 @@
 <div class="admin-shell">
   <div *ngIf="sidebarOpen" class="sidebar-overlay" (click)="sidebarOpen = false"></div>
-  <aside class="sidebar" [class.sidebar--open]="sidebarOpen">
-    <a class="sidebar__brand" routerLink="/dashboard" [attr.aria-label]="(programConfiguration()?.name || 'Millennium Rise') + ' ana sayfa'">
-      <app-brand-mark [inverse]="true" [name]="programConfiguration()?.name || 'Millennium Rise'" [logoUrl]="programConfiguration()?.logo?.url || null"></app-brand-mark>
+  <aside class="sidebar" [class.sidebar--open]="sidebarOpen" [class.sidebar--collapsed]="sidebarCollapsed">
+    <a class="sidebar__brand" routerLink="/dashboard" [title]="programConfiguration()?.name || 'Millennium Rise'" [attr.aria-label]="(programConfiguration()?.name || 'Millennium Rise') + ' ana sayfa'">
+      <app-brand-mark [compact]="sidebarCollapsed" [inverse]="true" [nowrap]="true" [fontSize]="sidebarBrandFontSize" [name]="programConfiguration()?.name || 'Millennium Rise'" [logoUrl]="programConfiguration()?.logo?.url || null"></app-brand-mark>
     </a>
     <nav class="sidebar__nav" aria-label="Ana menü">
-      <a *ngFor="let item of navigationItems" [routerLink]="item.path" routerLinkActive="sidebar__link--active" class="sidebar__link">
+      <a *ngFor="let item of navigationItems" [routerLink]="item.path" routerLinkActive="sidebar__link--active" class="sidebar__link" [title]="sidebarCollapsed ? item.label : ''">
         <app-icon [name]="item.icon" [size]="20"></app-icon><span>{{ item.label }}</span>
       </a>
     </nav>
-    <div class="sidebar__footer"><span class="sidebar__footer-label">Yönetim Paneli</span><span>{{ programConfiguration()?.name || 'Millennium Rise CRM' }}</span></div>
+    <div class="sidebar__footer">
+      <button class="sidebar__collapse" type="button" [attr.aria-label]="sidebarToggleLabel" [attr.aria-expanded]="sidebarExpanded" (click)="toggleSidebar()">
+        <app-icon [name]="sidebarToggleIcon" [size]="18"></app-icon><span>{{ sidebarCollapsed ? 'Menüyü genişlet' : 'Menüyü daralt' }}</span>
+      </button>
+      <div class="sidebar__footer-divider"></div>
+      <div class="sidebar__date"><app-icon name="calendar" [size]="16"></app-icon><span>{{ currentDateTime }}</span></div>
+    </div>
   </aside>
 
-  <section class="admin-main">
+  <section class="admin-main" [class.admin-main--sidebar-collapsed]="sidebarCollapsed">
     <header class="topbar">
-      <button class="icon-button topbar__menu" type="button" aria-label="Menüyü aç" (click)="sidebarOpen = !sidebarOpen"><app-icon name="menu" [size]="21"></app-icon></button>
+      <button class="icon-button topbar__menu" type="button" [attr.aria-label]="sidebarToggleLabel" [attr.aria-expanded]="sidebarExpanded" (click)="toggleSidebar()">
+        <app-icon [name]="sidebarToggleIcon" [size]="19"></app-icon>
+      </button>
       <div class="topbar__spacer"></div>
-      <div class="topbar__date"><app-icon name="calendar" [size]="17"></app-icon><span>{{ currentDate }}</span></div>
-      <div class="topbar__divider"></div>
-      <div class="topbar__user"><span class="topbar__avatar">{{ (session.user?.fullName || 'A').charAt(0).toUpperCase() }}</span><span class="topbar__user-name">{{ session.user?.fullName || 'Admin' }}</span></div>
-      <button class="topbar__logout" type="button" (click)="logout()"><app-icon name="logout" [size]="18"></app-icon><span>Çıkış Yap</span></button>
+      <div class="user-menu" [class.user-menu--open]="userMenuOpen" (click)="$event.stopPropagation()">
+        <button class="user-menu__trigger" type="button" aria-haspopup="menu" [attr.aria-expanded]="userMenuOpen" (click)="toggleUserMenu($event)">
+          <span class="user-menu__monogram">{{ userInitials }}</span>
+          <span class="user-menu__identity">
+            <strong>{{ session.user?.fullName || 'Admin' }}</strong>
+            <small>{{ session.user?.email || 'E-posta bulunamadı' }}</small>
+          </span>
+          <app-icon class="user-menu__chevron" name="chevron-down" [size]="16"></app-icon>
+        </button>
+        <div class="user-menu__dropdown" role="menu">
+          <div class="user-menu__summary">
+            <span>Oturum açan kullanıcı</span>
+            <div class="user-menu__summary-identity">
+              <span class="user-menu__monogram user-menu__monogram--small">{{ userInitials }}</span>
+              <span><strong>{{ session.user?.fullName || 'Admin' }}</strong><small>{{ session.user?.email || 'E-posta bulunamadı' }}</small></span>
+            </div>
+          </div>
+          <button class="user-menu__logout" type="button" role="menuitem" (click)="logout()">
+            <app-icon name="logout" [size]="18"></app-icon><span>Çıkış Yap</span>
+          </button>
+        </div>
+      </div>
     </header>
     <main class="page-content"><router-outlet></router-outlet></main>
   </section>

@@ -11,4 +11,6 @@ export class BrandMarkComponent {
   @Input() inverse = false;
   @Input() name = 'Millennium Rise';
   @Input() logoUrl: string | null = null;
+  @Input() fontSize: string | null = null;
+  @Input() nowrap = false;
 }
