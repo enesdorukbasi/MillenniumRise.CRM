@@ -17,7 +17,8 @@
 .sidebar__date app-icon { display: inline-flex; flex: 0 0 auto; margin-top: .05rem; }
 .sidebar__date span { font-variant-numeric: tabular-nums; }
 .sidebar--collapsed { width: 4.75rem; }
-.sidebar--collapsed .sidebar__brand { justify-content: center; padding-inline: 1rem; }
+.sidebar--collapsed .sidebar__brand { justify-content: center; padding-inline: 0; }
+.sidebar--collapsed .sidebar__brand app-brand-mark { align-items: center; display: flex; justify-content: center; width: 100%; }
 .sidebar--collapsed .sidebar__nav { padding-inline: .65rem; }
 .sidebar--collapsed .sidebar__link { gap: 0; justify-content: center; padding: 0; }
 .sidebar--collapsed .sidebar__link span, .sidebar--collapsed .sidebar__collapse span, .sidebar--collapsed .sidebar__footer-divider, .sidebar--collapsed .sidebar__date { display: none; }
@@ -30,5 +31,5 @@
 .topbar__spacer { flex: 1; }
 .page-content { margin: 0 auto; max-width: 105rem; padding: 1.6rem; }
 .sidebar-overlay { display: none; }
-@media (max-width: 900px) { .admin-main, .admin-main--sidebar-collapsed { padding-left: 0; }.sidebar, .sidebar--collapsed { transform: translateX(-100%); width: 15.5rem; }.sidebar--open { transform: translateX(0); }.sidebar--collapsed .sidebar__brand { justify-content: flex-start; padding-inline: 1.35rem; }.sidebar--collapsed .sidebar__nav { padding-inline: .7rem; }.sidebar--collapsed .sidebar__link { gap: .8rem; justify-content: flex-start; padding: 0 .85rem; }.sidebar--collapsed .sidebar__link span { display: inline; }.sidebar--collapsed .sidebar__footer { margin-inline: .75rem; }.sidebar--collapsed .sidebar__footer-divider, .sidebar--collapsed .sidebar__date { display: flex; }.sidebar__collapse { display: none; }.sidebar-overlay { background: rgb(5 17 37 / 52%); display: block; inset: 0; position: fixed; z-index: 45; }.topbar__menu { display: inline-flex; } }
+@media (max-width: 900px) { .admin-main, .admin-main--sidebar-collapsed { padding-left: 0; }.sidebar, .sidebar--collapsed { transform: translateX(-100%); width: 15.5rem; }.sidebar--open { transform: translateX(0); }.sidebar--collapsed .sidebar__brand { justify-content: flex-start; padding-inline: 1.35rem; }.sidebar--collapsed .sidebar__brand app-brand-mark { justify-content: flex-start; }.sidebar--collapsed .sidebar__nav { padding-inline: .7rem; }.sidebar--collapsed .sidebar__link { gap: .8rem; justify-content: flex-start; padding: 0 .85rem; }.sidebar--collapsed .sidebar__link span { display: inline; }.sidebar--collapsed .sidebar__footer { margin-inline: .75rem; }.sidebar--collapsed .sidebar__footer-divider, .sidebar--collapsed .sidebar__date { display: flex; }.sidebar__collapse { display: none; }.sidebar-overlay { background: rgb(5 17 37 / 52%); display: block; inset: 0; position: fixed; z-index: 45; }.topbar__menu { display: inline-flex; } }
 @media (max-width: 640px) { .page-content { padding: 1rem; }.topbar { gap: .55rem; padding: 0 .8rem; } }
