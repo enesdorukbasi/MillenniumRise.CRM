@@ -23,8 +23,6 @@ public sealed class LoginCommandValidator : BaseValidator<LoginCommand>
 
         if (model.Password.IsNullOrEmpty())
             AddError("Parola zorunludur.");
-        else if (!model.Password.IsValidPassword())
-            AddError("Parola en az 8 karakter olmalı; büyük harf, küçük harf ve rakam içermelidir.");
 
         return IsValid;
     }
