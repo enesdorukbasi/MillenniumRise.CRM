@@ -1,0 +1,90 @@
+<app-page-header title="Program Ayarları" description="Uygulama adını ve marka görsellerini tek yerden yönetin."></app-page-header>
+
+<div *ngIf="loading" class="panel state-panel"><span class="spinner"></span><p>Program ayarları yükleniyor...</p></div>
+
+<div *ngIf="!loading && errorMessage" class="alert alert--danger" role="alert">
+  <app-icon name="alert" [size]="18"></app-icon><span>{{ errorMessage }}</span>
+</div>
+
+<div *ngIf="!loading && successMessage" class="configuration-success" role="status">
+  <span class="configuration-success__mark">✓</span><span>{{ successMessage }}</span>
+</div>
+
+<form *ngIf="!loading" class="configuration-workspace" [formGroup]="form" (ngSubmit)="save()" novalidate>
+  <section class="configuration-editor panel">
+    <div class="configuration-section">
+      <div class="configuration-section__heading">
+        <span class="configuration-section__index">01</span>
+        <div><h2>Uygulama kimliği</h2><p>Menüde, giriş ekranında ve tarayıcı başlığında gösterilir.</p></div>
+      </div>
+      <label class="field">
+        <span class="field__label">Program adı</span>
+        <input class="input-control" formControlName="name" maxlength="200" placeholder="MillenniumRise | CRM">
+        <span *ngIf="form.controls.name.touched && form.controls.name.hasError('required')" class="field__error">Program adı zorunludur.</span>
+        <span *ngIf="form.controls.name.touched && form.controls.name.hasError('maxlength')" class="field__error">Program adı en fazla 200 karakter olabilir.</span>
+      </label>
+    </div>
+
+    <div class="configuration-section">
+      <div class="configuration-section__heading">
+        <span class="configuration-section__index">02</span>
+        <div><h2>Program logosu</h2><p>Şeffaf arka planlı kare veya yatay bir görsel önerilir.</p></div>
+      </div>
+      <div class="asset-control">
+        <div class="asset-control__thumb">
+          <img *ngIf="logoPreviewUrl" [src]="logoPreviewUrl" alt="Seçili program logosu">
+          <app-icon *ngIf="!logoPreviewUrl" name="image" [size]="28"></app-icon>
+        </div>
+        <div class="asset-control__body">
+          <strong>{{ logoFile?.name || (logoPreviewUrl ? 'Yüklü logo' : 'Logo seçilmedi') }}</strong>
+          <span>PNG, JPG, WEBP veya SVG görseli seçebilirsiniz.</span>
+          <div class="asset-control__actions">
+            <label class="button button--secondary">Görsel Seç<input type="file" accept="image/*" (change)="selectLogo($event)"></label>
+            <button *ngIf="logoPreviewUrl" class="button button--danger" type="button" (click)="removeLogo()">Kaldır</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="configuration-section">
+      <div class="configuration-section__heading">
+        <span class="configuration-section__index">03</span>
+        <div><h2>Giriş sayfası görseli</h2><p>Giriş ekranının sol alanında tam boy gösterilir.</p></div>
+      </div>
+      <div class="asset-control">
+        <div class="asset-control__thumb asset-control__thumb--wide">
+          <img *ngIf="authPageImagePreviewUrl" [src]="authPageImagePreviewUrl" alt="Seçili giriş sayfası görseli">
+          <app-icon *ngIf="!authPageImagePreviewUrl" name="image" [size]="28"></app-icon>
+        </div>
+        <div class="asset-control__body">
+          <strong>{{ authPageImageFile?.name || (authPageImagePreviewUrl ? 'Yüklü giriş görseli' : 'Görsel seçilmedi') }}</strong>
+          <span>En iyi sonuç için dikey veya geniş kadrajlı yüksek çözünürlüklü görsel kullanın.</span>
+          <div class="asset-control__actions">
+            <label class="button button--secondary">Görsel Seç<input type="file" accept="image/*" (change)="selectAuthPageImage($event)"></label>
+            <button *ngIf="authPageImagePreviewUrl" class="button button--danger" type="button" (click)="removeAuthPageImage()">Kaldır</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="configuration-actions">
+      <span>Değişiklikler giriş ekranına ve yönetim menüsüne uygulanır.</span>
+      <button class="button button--primary" type="submit" [disabled]="saving || form.invalid">
+        <app-icon name="save" [size]="17"></app-icon>{{ saving ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet' }}
+      </button>
+    </div>
+  </section>
+
+  <aside class="configuration-preview">
+    <div class="configuration-preview__heading"><span>Canlı önizleme</span><small>Giriş ekranı</small></div>
+    <div class="login-preview">
+      <img *ngIf="authPageImagePreviewUrl" class="login-preview__background" [src]="authPageImagePreviewUrl" alt="">
+      <div class="login-preview__shade"></div>
+      <div class="login-preview__brand">
+        <app-brand-mark [inverse]="true" [name]="form.controls.name.value || 'Program adı'" [logoUrl]="logoPreviewUrl"></app-brand-mark>
+      </div>
+      <div class="login-preview__message"><strong>Yönetim paneli</strong><span>Müşteri ilişkilerinizi tek merkezden yönetin.</span></div>
+    </div>
+    <p class="configuration-preview__note">Görseller farklı ekran oranlarında merkezden kırpılarak gösterilir.</p>
+  </aside>
+</form>

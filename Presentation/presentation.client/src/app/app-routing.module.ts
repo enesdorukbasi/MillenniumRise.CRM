@@ -19,6 +19,7 @@ const routes: Routes = [
       { path: 'customers', loadChildren: () => import('./features/customers/customers.module').then(module => module.CustomersModule) },
       { path: 'products', loadChildren: () => import('./features/products/products.module').then(module => module.ProductsModule) },
       { path: 'files', loadChildren: () => import('./features/files/files.module').then(module => module.FilesModule) },
+      { path: 'program-configuration', loadChildren: () => import('./features/program-configuration/program-configuration.module').then(module => module.ProgramConfigurationModule) },
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' }
     ]
   },

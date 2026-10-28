@@ -1,13 +1,15 @@
 <div class="admin-shell">
   <div *ngIf="sidebarOpen" class="sidebar-overlay" (click)="sidebarOpen = false"></div>
   <aside class="sidebar" [class.sidebar--open]="sidebarOpen">
-    <a class="sidebar__brand" routerLink="/dashboard" aria-label="Millennium Rise ana sayfa"><app-brand-mark [inverse]="true"></app-brand-mark></a>
+    <a class="sidebar__brand" routerLink="/dashboard" [attr.aria-label]="(programConfiguration()?.name || 'Millennium Rise') + ' ana sayfa'">
+      <app-brand-mark [inverse]="true" [name]="programConfiguration()?.name || 'Millennium Rise'" [logoUrl]="programConfiguration()?.logo?.url || null"></app-brand-mark>
+    </a>
     <nav class="sidebar__nav" aria-label="Ana menü">
       <a *ngFor="let item of navigationItems" [routerLink]="item.path" routerLinkActive="sidebar__link--active" class="sidebar__link">
         <app-icon [name]="item.icon" [size]="20"></app-icon><span>{{ item.label }}</span>
       </a>
     </nav>
-    <div class="sidebar__footer"><span class="sidebar__footer-label">Yönetim Paneli</span><span>Millennium Rise CRM</span></div>
+    <div class="sidebar__footer"><span class="sidebar__footer-label">Yönetim Paneli</span><span>{{ programConfiguration()?.name || 'Millennium Rise CRM' }}</span></div>
   </aside>
 
   <section class="admin-main">

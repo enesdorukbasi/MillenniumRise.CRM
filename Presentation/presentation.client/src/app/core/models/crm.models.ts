@@ -179,3 +179,17 @@ export interface DashboardSummary {
   customerProductCount: number;
   pendingFollowUpCount: number;
 }
+
+export interface ProgramConfiguration extends BaseDto {
+  name: string;
+  logoId: string | null;
+  logo: UploadedFile | null;
+  authPageImageId: string | null;
+  authPageImage: UploadedFile | null;
+}
+
+export interface ProgramConfigurationRequest {
+  name: string;
+  logoId: string | null;
+  authPageImageId: string | null;
+}

@@ -11,4 +11,6 @@
 
 .brand--inverse { color: #fff; }
 .brand__symbol { color: var(--color-primary-500); flex: 0 0 auto; height: 1.75rem; width: 2.2rem; }
+.brand__image { background: #fff; border-radius: .42rem; flex: 0 0 auto; height: 2rem; object-fit: contain; padding: .15rem; width: 2rem; }
 .brand--compact .brand__symbol { height: 1.55rem; width: 1.95rem; }
+.brand--compact .brand__image { height: 1.75rem; width: 1.75rem; }

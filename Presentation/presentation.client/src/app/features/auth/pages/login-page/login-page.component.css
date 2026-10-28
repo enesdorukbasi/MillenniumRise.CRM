@@ -1,5 +1,8 @@
 .login-shell { background: #fff; display: grid; grid-template-columns: minmax(22rem, 42%) 1fr; min-height: 100vh; }
 .login-context { background: var(--color-sidebar); overflow: hidden; padding: 3.5rem 4rem; position: relative; }
+.login-context__background { height: 100%; inset: 0; object-fit: cover; position: absolute; width: 100%; }
+.login-context__shade { background: linear-gradient(180deg, rgb(4 17 37 / 64%), rgb(4 17 37 / 10%) 50%, rgb(4 17 37 / 58%)); inset: 0; position: absolute; }
+.login-context__brand { position: relative; z-index: 2; }
 .network-motif { inset: 8rem -5rem -5rem -8rem; position: absolute; }.network-motif__orbit { border: 1px solid rgb(50 118 255 / 25%); border-radius: 50%; position: absolute; }
 .network-motif__orbit--one { height: 34rem; left: 1rem; top: 5rem; width: 34rem; }.network-motif__orbit--two { height: 24rem; left: 6rem; top: 10rem; width: 24rem; }
 .network-motif__line { background: var(--color-primary-500); height: 1px; left: 14rem; opacity: .55; position: absolute; top: 19rem; transform-origin: left; width: 13rem; }.network-motif__line--one { transform: rotate(-28deg); }.network-motif__line--two { transform: rotate(38deg); }

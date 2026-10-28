@@ -4,7 +4,7 @@ export type IconName =
   | 'dashboard' | 'customers' | 'products' | 'customer-products' | 'interactions' | 'files'
   | 'menu' | 'logout' | 'calendar' | 'search' | 'plus' | 'edit' | 'trash' | 'close'
   | 'chevron-left' | 'chevron-right' | 'upload' | 'mail' | 'lock' | 'eye' | 'eye-off'
-  | 'arrow-right' | 'refresh' | 'alert' | 'external';
+  | 'arrow-right' | 'refresh' | 'alert' | 'external' | 'settings' | 'image' | 'save';
 
 @Component({
   selector: 'app-icon',

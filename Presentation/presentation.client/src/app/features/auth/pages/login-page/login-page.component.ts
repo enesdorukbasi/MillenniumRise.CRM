@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../../../core/auth/auth.service';
+import { ProgramConfigurationService } from '../../../../core/configuration/program-configuration.service';
 import { getApiErrorMessage } from '../../../../core/http/api-error';
 
 @Component({ selector: 'app-login-page', templateUrl: './login-page.component.html', styleUrl: './login-page.component.css', standalone: false })
@@ -11,6 +12,7 @@ export class LoginPageComponent {
   passwordVisible = false;
   loading = false;
   errorMessage = '';
+  readonly programConfiguration = inject(ProgramConfigurationService).configuration;
   readonly form = this.formBuilder.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]]

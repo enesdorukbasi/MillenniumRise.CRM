@@ -1,7 +1,9 @@
 <main class="login-shell">
   <section class="login-context" aria-hidden="true">
-    <app-brand-mark [inverse]="true"></app-brand-mark>
-    <div class="network-motif">
+    <img *ngIf="programConfiguration()?.authPageImage?.url as authPageImageUrl" class="login-context__background" [src]="authPageImageUrl" alt="">
+    <div *ngIf="programConfiguration()?.authPageImage?.url" class="login-context__shade"></div>
+    <app-brand-mark class="login-context__brand" [inverse]="true" [name]="programConfiguration()?.name || 'Millennium Rise'" [logoUrl]="programConfiguration()?.logo?.url || null"></app-brand-mark>
+    <div *ngIf="!programConfiguration()?.authPageImage?.url" class="network-motif">
       <span class="network-motif__orbit network-motif__orbit--one"></span><span class="network-motif__orbit network-motif__orbit--two"></span>
       <span class="network-motif__line network-motif__line--one"></span><span class="network-motif__line network-motif__line--two"></span>
       <span class="network-motif__node network-motif__node--center"><app-icon name="customers" [size]="32"></app-icon></span>
@@ -12,7 +14,7 @@
   </section>
   <section class="login-form-region">
     <div class="login-card">
-      <app-brand-mark class="login-card__brand"></app-brand-mark>
+      <app-brand-mark class="login-card__brand" [name]="programConfiguration()?.name || 'Millennium Rise'" [logoUrl]="programConfiguration()?.logo?.url || null"></app-brand-mark>
       <h1>Yönetim paneline giriş</h1>
       <p class="login-card__description">Müşteri ilişkilerinizi yönetmek için hesabınızla giriş yapın.</p>
       <div *ngIf="errorMessage" class="alert alert--danger" role="alert"><app-icon name="alert" [size]="18"></app-icon><span>{{ errorMessage }}</span></div>
