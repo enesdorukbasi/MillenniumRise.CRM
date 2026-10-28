@@ -33,6 +33,7 @@ export class CustomersPageComponent implements OnInit {
   });
 
   constructor(private readonly customersService: CustomersService) {}
+  get hasActiveFilters(): boolean { return !!this.query.search || this.query.customerType !== undefined; }
   ngOnInit(): void { this.load(); }
 
   load(): void {
@@ -46,6 +47,12 @@ export class CustomersPageComponent implements OnInit {
   applyFilters(): void {
     const value = this.filterForm.getRawValue();
     this.query = { ...this.query, search: value.search || undefined, customerType: value.customerType ?? undefined, sortBy: value.sortBy ?? CustomerSortField.FullName, sortDirection: value.sortDirection ?? SortingDirection.Ascending, pageNumber: 1 };
+    this.load();
+  }
+
+  clearFilters(): void {
+    this.filterForm.patchValue({ search: '', customerType: null });
+    this.query = { ...this.query, search: undefined, customerType: undefined, pageNumber: 1 };
     this.load();
   }
 

@@ -33,6 +33,9 @@ public sealed class GetInteractionListQueryHandler(IRepository<Interaction> inte
         if (request.CustomerProductId.HasValue)
             predicate = predicate.And(interaction => interaction.CustomerProductId == request.CustomerProductId.Value);
 
+        if (request.ProductId.HasValue)
+            predicate = predicate.And(interaction => interaction.CustomerProduct.ProductId == request.ProductId.Value);
+
         if (request.Status.HasValue)
             predicate = predicate.And(interaction => interaction.Status == request.Status.Value);
 

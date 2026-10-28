@@ -19,9 +19,11 @@ export class ProductsPageComponent implements OnInit {
   readonly productForm = this.formBuilder.nonNullable.group({ name: ['', [Validators.required, Validators.maxLength(200)]], description: [''], isActive: [true] });
 
   constructor(private readonly productsService: ProductsService, private readonly uploadedFilesService: UploadedFilesService) {}
+  get hasActiveFilters(): boolean { return !!this.query.search || this.query.isActive !== undefined; }
   ngOnInit(): void { this.load(); }
   load(): void { this.loading = true; this.errorMessage = ''; this.productsService.getList(this.query).subscribe({ next: response => { this.result = response.data ?? null; this.loading = false; }, error: error => { this.errorMessage = getApiErrorMessage(error); this.loading = false; } }); }
   applyFilters(): void { const value = this.filterForm.getRawValue(); this.query = { ...this.query, search: value.search || undefined, isActive: value.isActive ?? undefined, sortBy: value.sortBy ?? ProductSortField.Name, sortDirection: value.sortDirection ?? SortingDirection.Ascending, pageNumber: 1 }; this.load(); }
+  clearFilters(): void { this.filterForm.patchValue({ search: '', isActive: null }); this.query = { ...this.query, search: undefined, isActive: undefined, pageNumber: 1 }; this.load(); }
   changePage(pageNumber: number): void { this.query = { ...this.query, pageNumber }; this.load(); }
   changePageSize(pageSize: number): void { this.query = { ...this.query, pageSize, pageNumber: 1 }; this.load(); }
   openCreate(): void { this.selectedProduct = null; this.logoFile = null; this.formError = ''; this.productForm.reset({ name: '', description: '', isActive: true }); this.formOpen = true; }

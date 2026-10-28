@@ -21,7 +21,8 @@ public sealed class GetCustomerProductByIdQueryHandler(IRepository<CustomerProdu
             query => query
                 .Include(current => current.Customer)
                 .Include(current => current.Product)
-                .ThenInclude(product => product.ProductLogo))
+                .ThenInclude(product => product.ProductLogo)
+                .Include(current => current.Interactions.OrderByDescending(interaction => interaction.OccurredAt ?? interaction.ScheduledAt ?? interaction.CreatedAt).Take(1)))
             ?? throw new NotFoundException("Müşteri ürünü", request.Id);
 
         return customerProductMapper.Map(customerProduct);

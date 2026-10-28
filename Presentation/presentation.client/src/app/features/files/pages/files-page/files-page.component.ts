@@ -41,6 +41,7 @@ export class FilesPageComponent implements OnInit {
   });
 
   constructor(private readonly uploadedFilesService: UploadedFilesService) {}
+  get hasActiveFilters(): boolean { return !!this.query.search || !!this.query.extension || !!this.query.contentType; }
 
   ngOnInit(): void { this.load(); }
 
@@ -64,6 +65,12 @@ export class FilesPageComponent implements OnInit {
       sortDirection: value.sortDirection ?? SortingDirection.Descending,
       pageNumber: 1
     };
+    this.load();
+  }
+
+  clearFilters(): void {
+    this.filterForm.patchValue({ search: '', extension: '', contentType: '' });
+    this.query = { ...this.query, search: undefined, extension: undefined, contentType: undefined, pageNumber: 1 };
     this.load();
   }
 

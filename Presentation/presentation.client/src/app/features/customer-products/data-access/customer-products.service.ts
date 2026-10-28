@@ -10,6 +10,7 @@ export class CustomerProductsService {
   private readonly endpoint = '/api/CustomerProduct';
   constructor(private readonly http: HttpClient) {}
   getList(query: CustomerProductListQuery): Observable<ApiResult<PagedResult<CustomerProduct>>> { return this.http.get<ApiResult<PagedResult<CustomerProduct>>>(this.endpoint, { params: createHttpParams(query) }); }
+  getById(id: string): Observable<ApiResult<CustomerProduct>> { return this.http.get<ApiResult<CustomerProduct>>(`${this.endpoint}/${id}`); }
   create(request: CustomerProductRequest): Observable<ApiResult<CustomerProduct>> { return this.http.post<ApiResult<CustomerProduct>>(this.endpoint, request); }
   update(id: string, request: CustomerProductRequest): Observable<ApiResult<CustomerProduct>> { return this.http.put<ApiResult<CustomerProduct>>(`${this.endpoint}/${id}`, request); }
   delete(id: string): Observable<void> { return this.http.delete<void>(`${this.endpoint}/${id}`); }

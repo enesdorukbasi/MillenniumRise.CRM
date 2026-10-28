@@ -8,6 +8,7 @@ namespace Application.Features.InteractionFeature.Queries.GetList;
 public sealed record GetInteractionListQuery(
     string? Search = null,
     Guid? CustomerProductId = null,
+    Guid? ProductId = null,
     InteractionStatus? Status = null,
     InteractionChannel? Channel = null,
     InteractionOutcome? Outcome = null,

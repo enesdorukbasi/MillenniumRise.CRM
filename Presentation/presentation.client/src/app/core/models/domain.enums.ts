@@ -29,6 +29,26 @@ export const interactionChannelLabels: Record<InteractionChannel, string> = {
   [InteractionChannel.Other]: 'Diğer'
 };
 
+export const interactionChannelIconClasses: Record<InteractionChannel, string> = {
+  [InteractionChannel.Phone]: 'bi bi-telephone-fill',
+  [InteractionChannel.Email]: 'bi bi-envelope-fill',
+  [InteractionChannel.WhatsApp]: 'bi bi-whatsapp',
+  [InteractionChannel.SocialMedia]: 'bi bi-chat-dots-fill',
+  [InteractionChannel.OnlineMeeting]: 'bi bi-camera-video-fill',
+  [InteractionChannel.InPersonMeeting]: 'bi bi-people-fill',
+  [InteractionChannel.Other]: 'bi bi-three-dots'
+};
+
+export const interactionChannelMarkerClasses: Record<InteractionChannel, string> = {
+  [InteractionChannel.Phone]: 'interaction-channel--phone',
+  [InteractionChannel.Email]: 'interaction-channel--email',
+  [InteractionChannel.WhatsApp]: 'interaction-channel--whatsapp',
+  [InteractionChannel.SocialMedia]: 'interaction-channel--social',
+  [InteractionChannel.OnlineMeeting]: 'interaction-channel--online-meeting',
+  [InteractionChannel.InPersonMeeting]: 'interaction-channel--in-person',
+  [InteractionChannel.Other]: 'interaction-channel--other'
+};
+
 export const interactionStatusLabels: Record<InteractionStatus, string> = {
   [InteractionStatus.Planned]: 'Planlandı',
   [InteractionStatus.Completed]: 'Tamamlandı',

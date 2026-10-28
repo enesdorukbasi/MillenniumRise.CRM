@@ -14,8 +14,6 @@ export class AdminLayoutComponent {
     { label: 'Genel Bakış', path: '/dashboard', icon: 'dashboard' },
     { label: 'Müşteriler', path: '/customers', icon: 'customers' },
     { label: 'Ürünler', path: '/products', icon: 'products' },
-    { label: 'Müşteri Ürünleri', path: '/customer-products', icon: 'customer-products' },
-    { label: 'Etkileşimler', path: '/interactions', icon: 'interactions' },
     { label: 'Dosyalar', path: '/files', icon: 'files' }
   ];
 

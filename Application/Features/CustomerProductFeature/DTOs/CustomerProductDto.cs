@@ -12,6 +12,8 @@ public sealed record CustomerProductDto : BaseDto
     public Guid ProductId { get; init; }
     public required ProductDto Product { get; init; }
     public CustomerProductStatus Status { get; init; }
+    public DateTimeOffset? LastInteractionAt { get; init; }
+    public InteractionChannel? LastInteractionChannel { get; init; }
     public DateTimeOffset? NextFollowUpAt { get; init; }
     public string? StatusNote { get; init; }
 }

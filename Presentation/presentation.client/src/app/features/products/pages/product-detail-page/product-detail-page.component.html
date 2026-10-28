@@ -1,0 +1,83 @@
+<nav class="breadcrumbs" aria-label="Sayfa yolu"><a routerLink="/products">Ürünler</a><app-icon name="chevron-right" [size]="14"></app-icon><span>{{ product?.name || 'Ürün detayı' }}</span></nav>
+
+<div *ngIf="loading" class="state-panel detail-state"><span class="spinner"></span><p>Ürün bilgileri yükleniyor...</p></div>
+<div *ngIf="!loading && errorMessage" class="state-panel detail-state"><app-icon name="alert" [size]="28"></app-icon><h3>Ürün yüklenemedi</h3><p>{{ errorMessage }}</p><button class="button button--secondary" (click)="loadProduct()">Tekrar Dene</button></div>
+
+<ng-container *ngIf="!loading && product">
+  <section class="product-hero">
+    <div class="product-hero__identity">
+      <span class="product-hero__logo"><img *ngIf="product.productLogo" [src]="product.productLogo.url" [alt]="product.name"><app-icon *ngIf="!product.productLogo" name="products" [size]="34"></app-icon></span>
+      <div><div class="product-hero__title-line"><h1>{{ product.name }}</h1><span class="status" [ngClass]="product.isActive ? 'status--success' : 'status--neutral'">{{ product.isActive ? 'Aktif' : 'Pasif' }}</span></div><p>{{ product.description || 'Bu ürün için henüz açıklama girilmemiş.' }}</p></div>
+      <button class="button button--secondary product-hero__edit" (click)="openEditProduct()"><app-icon name="edit" [size]="16"></app-icon>Ürünü Düzenle</button>
+    </div>
+
+    <div class="product-hero__pipeline">
+      <div class="pipeline-distribution" [attr.aria-label]="'Müşteri durum dağılımı, toplam ' + totalCustomerCount + ' müşteri'">
+        <ng-container *ngFor="let status of statuses">
+          <span *ngIf="statusCounts[status] > 0" class="pipeline-stage" [ngClass]="stageClasses[status]" [style.flex-grow]="statusCounts[status]" tabindex="0" [attr.aria-label]="statusLabels[status] + ': ' + statusCounts[status] + ' müşteri'" [attr.data-tooltip]="statusLabels[status] + ' · ' + statusCounts[status] + ' müşteri'"></span>
+        </ng-container>
+        <span *ngIf="totalCustomerCount === 0" class="pipeline-stage pipeline-stage--empty" aria-label="Müşteri bulunmuyor"></span>
+      </div>
+      <div class="pipeline-labels"><div *ngFor="let status of statuses"><span><i class="pipeline-label__swatch" [ngClass]="stageClasses[status]"></i>{{ statusLabels[status] }}</span><strong>{{ statusCounts[status] }}</strong></div></div>
+    </div>
+
+    <aside class="product-hero__summary">
+      <div><span class="summary-icon"><app-icon name="customers" [size]="21"></app-icon></span><p><small>Toplam</small><strong>{{ totalCustomerCount }} müşteri</strong></p></div>
+      <div><span class="summary-icon"><app-icon name="interactions" [size]="21"></app-icon></span><p><small>Bu hafta</small><strong>{{ weeklyInteractionCount }} etkileşim</strong></p></div>
+    </aside>
+  </section>
+
+  <section class="panel customer-workspace">
+    <header class="workspace-header"><h2>Müşteriler ve Etkileşimler</h2><button class="button button--primary" (click)="openAddCustomer()"><app-icon name="plus" [size]="17"></app-icon>Müşteri Ekle</button></header>
+    <div class="status-tabs" role="tablist" aria-label="Müşteri durumları">
+      <button type="button" role="tab" [attr.aria-selected]="query.status === undefined" [class.status-tabs__item--active]="query.status === undefined" (click)="selectStatus(null)"><span>Tümü</span><strong>{{ totalCustomerCount }}</strong></button>
+      <button *ngFor="let status of statuses" type="button" role="tab" [attr.aria-selected]="query.status === status" [class.status-tabs__item--active]="query.status === status" (click)="selectStatus(status)"><span>{{ statusLabels[status] }}</span><strong>{{ statusCounts[status] }}</strong></button>
+    </div>
+    <form class="workspace-toolbar" [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+      <label class="search-box"><app-icon name="search" [size]="18"></app-icon><input formControlName="search" placeholder="Müşteri adı, kişi veya e-posta ile ara..."></label>
+      <div class="workspace-toolbar__sort"><select class="select-control" formControlName="sortBy"><option [ngValue]="sortFields.CustomerName">Müşteri adına göre</option><option [ngValue]="sortFields.Status">Duruma göre</option><option [ngValue]="sortFields.NextFollowUpAt">Takip tarihine göre</option><option [ngValue]="sortFields.UpdatedAt">Son güncellemeye göre</option></select><select class="select-control" formControlName="sortDirection"><option [ngValue]="sortDirections.Ascending">Artan</option><option [ngValue]="sortDirections.Descending">Azalan</option></select><button *ngIf="!hasActiveFilters" class="button button--secondary" type="submit">Uygula</button><button *ngIf="hasActiveFilters" class="button button--secondary" type="button" (click)="clearFilters()">Filtreyi Kaldır</button></div>
+    </form>
+
+    <div *ngIf="tableLoading" class="state-panel"><span class="spinner"></span><p>Müşteriler yükleniyor...</p></div>
+    <div *ngIf="!tableLoading && tableError" class="state-panel"><app-icon name="alert" [size]="28"></app-icon><h3>Müşteriler yüklenemedi</h3><p>{{ tableError }}</p><button class="button button--secondary" (click)="loadCustomerProducts()">Tekrar Dene</button></div>
+    <div *ngIf="!tableLoading && !tableError && !result?.items?.length" class="state-panel"><app-icon name="customers" [size]="30"></app-icon><h3>Bu durumda müşteri bulunamadı</h3><p>Filtreyi değiştirin veya ürüne yeni bir müşteri ekleyin.</p></div>
+
+    <div *ngIf="!tableLoading && result?.items?.length" class="table-wrap customer-table-wrap">
+      <table class="data-table customer-table">
+        <thead><tr><th class="disclosure-column" aria-label="Satır ayrıntısı"></th><th>Müşteri</th><th>İletişim</th><th>Durum</th><th>Son Etkileşim</th><th>Sonraki Takip</th><th>Sorumlu</th><th class="action-column">İşlem</th></tr></thead>
+        <tbody>
+          <ng-container *ngFor="let item of result?.items">
+            <tr [class.customer-row--expanded]="expandedItem?.id === item.id">
+              <td class="disclosure-cell"><button class="row-disclosure" [class.row-disclosure--open]="expandedItem?.id === item.id" [attr.aria-label]="expandedItem?.id === item.id ? 'Müşteri ayrıntısını kapat' : 'Müşteri ayrıntısını aç'" (click)="toggleInteractions(item)"><app-icon name="chevron-right" [size]="16"></app-icon></button></td>
+              <td><span class="table-primary">{{ item.customer.companyName || item.customer.fullName }}</span><span *ngIf="item.customer.companyName" class="table-secondary">{{ item.customer.fullName }}</span></td>
+              <td><span class="table-primary contact-name">{{ item.customer.fullName }}</span><span class="table-secondary">{{ item.customer.email || item.customer.phoneNumber || 'İletişim bilgisi yok' }}</span></td>
+              <td><span class="status" [ngClass]="statusClass(item.status)">{{ statusLabels[item.status] }}</span></td>
+              <td class="last-interaction-cell"><strong>{{ item.lastInteractionAt ? (item.lastInteractionAt | date:'dd.MM.yyyy HH:mm') : '—' }}</strong><span *ngIf="item.lastInteractionChannel !== null" class="table-secondary">{{ channelLabels[item.lastInteractionChannel] }}</span></td>
+              <td>{{ item.nextFollowUpAt ? (item.nextFollowUpAt | date:'dd.MM.yyyy HH:mm') : '—' }}</td>
+              <td class="assignee-cell">—</td>
+              <td><div class="table-actions"><button class="icon-button" type="button" title="Müşteri sürecini düzenle" [attr.aria-label]="(item.customer.companyName || item.customer.fullName) + ' sürecini düzenle'" (click)="openEditCustomerProduct(item)"><app-icon name="edit" [size]="16"></app-icon></button><a class="icon-button detail-button" [routerLink]="['/products', product.id, 'customer-products', item.id]" title="Müşteri detayına git"><app-icon name="arrow-right" [size]="16"></app-icon></a></div></td>
+            </tr>
+            <tr *ngIf="expandedItem?.id === item.id" class="expanded-row"><td colspan="8">
+              <div class="expanded-content">
+                <section class="customer-summary"><h3>Müşteri Özeti</h3><dl><div><dt>Müşteri</dt><dd>{{ item.customer.companyName || item.customer.fullName }}</dd></div><div><dt>İlgili Kişi</dt><dd>{{ item.customer.fullName }}</dd></div><div><dt>E-posta</dt><dd>{{ item.customer.email || '—' }}</dd></div><div><dt>Telefon</dt><dd>{{ item.customer.phoneNumber || '—' }}</dd></div><div><dt>Sektör</dt><dd>{{ item.customer.sector || '—' }}</dd></div><div><dt>Konum</dt><dd>{{ item.customer.location || '—' }}</dd></div><div class="customer-summary__note"><dt>Müşteri Notu</dt><dd>{{ item.customer.note || 'Bu müşteri için not bulunmuyor.' }}</dd></div></dl></section>
+                <section class="interaction-history"><header><h3>Etkileşim Geçmişi</h3><button class="button button--secondary button--compact" (click)="openAddInteraction(item)"><app-icon name="plus" [size]="15"></app-icon>Yeni Etkileşim</button></header>
+                  <div *ngIf="expandedLoading" class="inline-loading"><span class="spinner"></span>Yükleniyor...</div>
+                  <div *ngIf="!expandedLoading && !expandedInteractions?.items?.length" class="inline-empty">Henüz etkileşim kaydı bulunmuyor.</div>
+                  <ol *ngIf="!expandedLoading && expandedInteractions?.items?.length" class="interaction-list"><li *ngFor="let interaction of expandedInteractions?.items"><span class="interaction-list__icon" [ngClass]="channelMarkerClasses[interaction.channel]"><i [class]="channelIconClasses[interaction.channel]" aria-hidden="true"></i></span><div class="interaction-list__date"><strong>{{ (interaction.occurredAt || interaction.scheduledAt || interaction.createdAt) | date:'dd.MM.yyyy HH:mm' }}</strong><span>{{ channelLabels[interaction.channel] }}</span></div><span class="status" [ngClass]="interactionStatusClass(interaction.status)">{{ interactionStatusLabels[interaction.status] }}</span><p>{{ interaction.notes }}</p></li></ol>
+                  <div *ngIf="expandedInteractions && expandedInteractions.totalPages > 1" class="inline-pagination"><button class="icon-button" [disabled]="!expandedInteractions.hasPreviousPage" (click)="loadExpandedInteractions(expandedInteractions.pageNumber - 1)"><app-icon name="chevron-left" [size]="15"></app-icon></button><span>{{ expandedInteractions.pageNumber }} / {{ expandedInteractions.totalPages }}</span><button class="icon-button" [disabled]="!expandedInteractions.hasNextPage" (click)="loadExpandedInteractions(expandedInteractions.pageNumber + 1)"><app-icon name="chevron-right" [size]="15"></app-icon></button></div>
+                </section>
+              </div>
+            </td></tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+    <app-pagination *ngIf="result" [pageNumber]="result.pageNumber" [pageSize]="result.pageSize" [totalCount]="result.totalCount" [totalPages]="result.totalPages" (pageChange)="changePage($event)" (pageSizeChange)="changePageSize($event)"></app-pagination>
+  </section>
+</ng-container>
+
+<app-modal [open]="customerFormOpen" [title]="selectedCustomerProduct ? 'Müşteri Sürecini Düzenle' : 'Ürüne Müşteri Ekle'" (closed)="customerFormOpen = false; selectedCustomerProduct = null"><div *ngIf="formError" class="alert alert--danger">{{ formError }}</div><form [formGroup]="customerProductForm" (ngSubmit)="saveCustomerProduct()"><div class="form-grid"><label *ngIf="!selectedCustomerProduct" class="field form-grid__full"><span class="field__label">Müşteri *</span><select class="select-control" formControlName="customerId"><option value="">Seçiniz</option><option *ngFor="let customer of customerOptions" [value]="customer.id">{{ customer.companyName || customer.fullName }}</option></select><span class="field__hint" *ngIf="!customerOptions.length">Bu ürüne eklenebilecek müşteri bulunmuyor.</span></label><div *ngIf="selectedCustomerProduct" class="field form-grid__full"><span class="field__label">Müşteri</span><strong>{{ selectedCustomerProduct.customer.companyName || selectedCustomerProduct.customer.fullName }}</strong></div><label class="field"><span class="field__label">Durum *</span><select class="select-control" formControlName="status"><option *ngFor="let status of statuses" [ngValue]="status">{{ statusLabels[status] }}</option></select></label><label class="field"><span class="field__label">Sonraki Takip</span><input class="input-control" type="datetime-local" formControlName="nextFollowUpAt"></label><label class="field form-grid__full"><span class="field__label">Durum Notu</span><textarea class="textarea-control" rows="4" formControlName="statusNote"></textarea></label></div><div class="form-actions"><button class="button button--secondary" type="button" (click)="customerFormOpen = false; selectedCustomerProduct = null">Vazgeç</button><button class="button button--primary" type="submit" [disabled]="saving || (!selectedCustomerProduct && !customerOptions.length)">{{ saving ? 'Kaydediliyor...' : (selectedCustomerProduct ? 'Değişiklikleri Kaydet' : 'Müşteriyi Ekle') }}</button></div></form></app-modal>
+
+<app-modal [open]="interactionFormOpen" title="Yeni Etkileşim" size="large" (closed)="interactionFormOpen = false"><div *ngIf="formError" class="alert alert--danger">{{ formError }}</div><form [formGroup]="interactionForm" (ngSubmit)="saveInteraction()"><div class="form-grid"><label class="field"><span class="field__label">Kanal *</span><select class="select-control" formControlName="channel"><option *ngFor="let channel of channels" [ngValue]="channel">{{ channelLabels[channel] }}</option></select></label><label class="field"><span class="field__label">Durum *</span><select class="select-control" formControlName="status"><option *ngFor="let status of interactionStatuses" [ngValue]="status">{{ interactionStatusLabels[status] }}</option></select></label><label class="field"><span class="field__label">Planlanan Tarih</span><input class="input-control" type="datetime-local" formControlName="scheduledAt"></label><label class="field"><span class="field__label">Gerçekleşme Tarihi</span><input class="input-control" type="datetime-local" formControlName="occurredAt"></label><label class="field"><span class="field__label">Sonuç</span><select class="select-control" formControlName="outcome"><option [ngValue]="null">Seçilmedi</option><option *ngFor="let outcome of outcomes" [ngValue]="outcome">{{ outcomeLabels[outcome] }}</option></select></label><label class="field"><span class="field__label">Sonraki Takip</span><input class="input-control" type="datetime-local" formControlName="nextFollowUpAt"></label><label class="field form-grid__full"><span class="field__label">Not *</span><textarea class="textarea-control" rows="5" formControlName="notes"></textarea></label></div><div class="form-actions"><button class="button button--secondary" type="button" (click)="interactionFormOpen = false">Vazgeç</button><button class="button button--primary" type="submit" [disabled]="saving">{{ saving ? 'Kaydediliyor...' : 'Etkileşimi Kaydet' }}</button></div></form></app-modal>
+
+<app-modal [open]="productFormOpen" title="Ürünü Düzenle" (closed)="productFormOpen = false"><div *ngIf="formError" class="alert alert--danger">{{ formError }}</div><form [formGroup]="productForm" (ngSubmit)="saveProduct()"><div class="form-grid"><label class="field form-grid__full"><span class="field__label">Ürün Adı *</span><input class="input-control" formControlName="name"></label><label class="field form-grid__full"><span class="field__label">Açıklama</span><textarea class="textarea-control" rows="4" formControlName="description"></textarea></label><label class="field"><span class="field__label">Durum</span><select class="select-control" formControlName="isActive"><option [ngValue]="true">Aktif</option><option [ngValue]="false">Pasif</option></select></label></div><div class="form-actions"><button class="button button--secondary" type="button" (click)="productFormOpen = false">Vazgeç</button><button class="button button--primary" type="submit" [disabled]="saving">{{ saving ? 'Kaydediliyor...' : 'Kaydet' }}</button></div></form></app-modal>

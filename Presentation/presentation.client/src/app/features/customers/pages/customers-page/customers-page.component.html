@@ -5,7 +5,8 @@
     <select class="select-control filter-select" formControlName="customerType"><option [ngValue]="null">Tüm müşteri tipleri</option><option *ngFor="let type of customerTypes" [ngValue]="type">{{ customerTypeLabels[type] }}</option></select>
     <select class="select-control filter-select" formControlName="sortBy"><option [ngValue]="sortFields.FullName">Ada göre</option><option [ngValue]="sortFields.CompanyName">Şirkete göre</option><option [ngValue]="sortFields.CreatedAt">Oluşturma tarihine göre</option></select>
     <select class="select-control filter-select" formControlName="sortDirection"><option [ngValue]="sortDirections.Ascending">Artan</option><option [ngValue]="sortDirections.Descending">Azalan</option></select>
-    <button class="button button--secondary" type="submit">Filtrele</button>
+    <button *ngIf="!hasActiveFilters" class="button button--secondary" type="submit">Filtrele</button>
+    <button *ngIf="hasActiveFilters" class="button button--secondary" type="button" (click)="clearFilters()">Filtreyi Kaldır</button>
   </form>
   <div *ngIf="loading" class="state-panel"><span class="spinner"></span><p>Müşteriler yükleniyor...</p></div>
   <div *ngIf="!loading && errorMessage" class="state-panel"><app-icon name="alert" [size]="28"></app-icon><h3>Müşteriler yüklenemedi</h3><p>{{ errorMessage }}</p><button class="button button--secondary" (click)="load()">Tekrar Dene</button></div>

@@ -14,7 +14,8 @@
       <option [ngValue]="sortDirections.Descending">Azalan</option>
       <option [ngValue]="sortDirections.Ascending">Artan</option>
     </select>
-    <button class="button button--secondary" type="submit">Filtrele</button>
+    <button *ngIf="!hasActiveFilters" class="button button--secondary" type="submit">Filtrele</button>
+    <button *ngIf="hasActiveFilters" class="button button--secondary" type="button" (click)="clearFilters()">Filtreyi Kaldır</button>
   </form>
 
   <div *ngIf="loading" class="state-panel"><span class="spinner"></span><p>Dosyalar yükleniyor...</p></div>

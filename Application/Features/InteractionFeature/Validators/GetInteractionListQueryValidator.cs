@@ -19,6 +19,9 @@ public sealed class GetInteractionListQueryValidator : BaseValidator<GetInteract
         if (model.CustomerProductId == Guid.Empty)
             AddError("Geçerli bir müşteri ürünü kimliği giriniz.");
 
+        if (model.ProductId == Guid.Empty)
+            AddError("Geçerli bir ürün kimliği giriniz.");
+
         if (model.Search.IsNotNullOrEmpty() && !model.Search.MaxLengthControl(300))
             AddError("Arama metni en fazla 300 karakter olabilir.");
 

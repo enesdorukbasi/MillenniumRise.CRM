@@ -104,6 +104,8 @@ export interface CustomerProduct extends BaseDto {
   productId: string;
   product: Product;
   status: CustomerProductStatus;
+  lastInteractionAt: string | null;
+  lastInteractionChannel: InteractionChannel | null;
   nextFollowUpAt: string | null;
   statusNote: string | null;
 }
@@ -159,6 +161,7 @@ export enum InteractionSortField { InteractionDate, ScheduledAt, OccurredAt, Sta
 export interface InteractionListQuery {
   search?: string;
   customerProductId?: string;
+  productId?: string;
   status?: InteractionStatus;
   channel?: InteractionChannel;
   outcome?: InteractionOutcome;

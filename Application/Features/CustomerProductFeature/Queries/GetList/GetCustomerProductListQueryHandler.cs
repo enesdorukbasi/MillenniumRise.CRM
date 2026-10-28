@@ -68,7 +68,8 @@ public sealed class GetCustomerProductListQueryHandler(IRepository<CustomerProdu
             include: query => query
                 .Include(customerProduct => customerProduct.Customer)
                 .Include(customerProduct => customerProduct.Product)
-                .ThenInclude(product => product.ProductLogo),
+                .ThenInclude(product => product.ProductLogo)
+                .Include(customerProduct => customerProduct.Interactions.OrderByDescending(interaction => interaction.OccurredAt ?? interaction.ScheduledAt ?? interaction.CreatedAt).Take(1)),
             skip: (request.PageNumber - 1) * request.PageSize,
             take: request.PageSize,
             asNoTracking: true,
