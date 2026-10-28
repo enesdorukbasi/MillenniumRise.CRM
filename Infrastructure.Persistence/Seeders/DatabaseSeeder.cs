@@ -14,7 +14,27 @@ public sealed class DatabaseSeeder(CrmDbContext context, IPasswordHasher passwor
     public Guid AdminIdValue { get; set; } = Guid.Parse("11111111-1111-1111-1111-111111111111");
     public async Task SeedAsync(CancellationToken cancellationToken = default)
     {
-        await AdminUserSeedAsync();
+        await AdminUserSeedAsync(cancellationToken);
+        await ProgramConfigurationSeedAsync(cancellationToken);
+    }
+
+    private async Task ProgramConfigurationSeedAsync(CancellationToken cancellationToken = default)
+    {
+        if (await context.ProgramConfigurations.AnyAsync(cancellationToken))
+            return;
+
+        var programConfiguration = new ProgramConfiguration
+        {
+            Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+            Name = "MillenniumRise | CRM",
+            LogoId = null,
+            AuthPageImageId = null
+        };
+
+        await context.ProgramConfigurations.AddAsync(programConfiguration, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("Başlangıç program ayarları oluşturuldu. ProgramConfigurationId: {ProgramConfigurationId}", programConfiguration.Id);
     }
 
     private async Task AdminUserSeedAsync(CancellationToken cancellationToken = default)

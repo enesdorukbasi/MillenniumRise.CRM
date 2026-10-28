@@ -30,7 +30,7 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-await app.Services.SeedAdminUserAsync();
+await app.Services.SeedDatabaseAsync();
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();

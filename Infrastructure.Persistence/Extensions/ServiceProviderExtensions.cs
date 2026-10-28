@@ -7,7 +7,7 @@ namespace Infrastructure.Persistence.Extensions;
 
 public static class ServiceProviderExtensions
 {
-    public static async Task SeedAdminUserAsync(this IServiceProvider serviceProvider, CancellationToken cancellationToken = default)
+    public static async Task SeedDatabaseAsync(this IServiceProvider serviceProvider, CancellationToken cancellationToken = default)
     {
         await using var scope = serviceProvider.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<CrmDbContext>();

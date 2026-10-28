@@ -6,6 +6,7 @@ namespace Infrastructure.Persistence.Contexts;
 public sealed class CrmDbContext(DbContextOptions<CrmDbContext> options) : DbContext(options)
 {
     public DbSet<AppUser> AppUsers => Set<AppUser>();
+    public DbSet<ProgramConfiguration> ProgramConfigurations => Set<ProgramConfiguration>();
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Product> Products => Set<Product>();
     public DbSet<CustomerProduct> CustomerProducts => Set<CustomerProduct>();
