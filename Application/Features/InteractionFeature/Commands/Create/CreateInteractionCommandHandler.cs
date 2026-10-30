@@ -1,6 +1,5 @@
 using Application.Abstractions.Mappers;
 using Application.Abstractions.Persistence.Repository;
-using Application.Abstractions.Validators;
 using Application.Features.InteractionFeature.DTOs;
 using Domain.Entities;
 using Domain.Exceptions;
@@ -9,13 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.InteractionFeature.Commands.Create;
 
-public sealed class CreateInteractionCommandHandler(IRepository<Interaction> interactionRepository, IRepository<CustomerProduct> customerProductRepository, IValidator<CreateInteractionCommand> validator, IMapper<Interaction, InteractionDto> interactionMapper) : IRequestHandler<CreateInteractionCommand, InteractionDto>
+public sealed class CreateInteractionCommandHandler(IRepository<Interaction> interactionRepository, IRepository<CustomerProduct> customerProductRepository, IMapper<Interaction, InteractionDto> interactionMapper) : IRequestHandler<CreateInteractionCommand, InteractionDto>
 {
     public async Task<InteractionDto> Handle(CreateInteractionCommand request, CancellationToken cancellationToken)
     {
-        if (!validator.Validate(request))
-            throw new AppValidationException(validator.GetErrors);
-
         var customerProduct = await customerProductRepository.SingleOrDefaultAsync(
             current => current.Id == request.CustomerProductId,
             query => query

@@ -1,5 +1,6 @@
 using Application.Abstractions.Mappers;
 using Application.Abstractions.Validators;
+using Application.Common.Behaviors;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application;
@@ -16,7 +17,11 @@ public static class ServiceRegistrator
 
     private static IServiceCollection AddMediatRServices(this IServiceCollection services)
     {
-        return services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(ServiceRegistrator).Assembly));
+        return services.AddMediatR(configuration =>
+        {
+            configuration.RegisterServicesFromAssembly(typeof(ServiceRegistrator).Assembly);
+            configuration.AddOpenBehavior(typeof(ValidationBehavior<,>));
+        });
     }
 
     private static IServiceCollection AddValidatorServices(this IServiceCollection services)

@@ -1,6 +1,5 @@
 using Application.Abstractions.Mappers;
 using Application.Abstractions.Persistence.Repository;
-using Application.Abstractions.Validators;
 using Application.Features.InteractionFeature.DTOs;
 using Domain.Entities;
 using Domain.Exceptions;
@@ -9,13 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.InteractionFeature.Commands.Update;
 
-public sealed class UpdateInteractionCommandHandler(IRepository<Interaction> interactionRepository, IRepository<CustomerProduct> customerProductRepository, IValidator<UpdateInteractionCommand> validator, IMapper<Interaction, InteractionDto> interactionMapper) : IRequestHandler<UpdateInteractionCommand, InteractionDto>
+public sealed class UpdateInteractionCommandHandler(IRepository<Interaction> interactionRepository, IRepository<CustomerProduct> customerProductRepository, IMapper<Interaction, InteractionDto> interactionMapper) : IRequestHandler<UpdateInteractionCommand, InteractionDto>
 {
     public async Task<InteractionDto> Handle(UpdateInteractionCommand request, CancellationToken cancellationToken)
     {
-        if (!validator.Validate(request))
-            throw new AppValidationException(validator.GetErrors);
-
         var interaction = await interactionRepository.GetByIdAsync(request.Id)
             ?? throw new NotFoundException("Etkileşim", request.Id);
 

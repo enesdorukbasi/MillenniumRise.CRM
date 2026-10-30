@@ -1,6 +1,5 @@
 using Application.Abstractions.Mappers;
 using Application.Abstractions.Persistence.Repository;
-using Application.Abstractions.Validators;
 using Application.Common.Pagination;
 using Application.Extensions;
 using Application.Features.InteractionFeature.DTOs;
@@ -12,13 +11,10 @@ using System.Linq.Expressions;
 
 namespace Application.Features.InteractionFeature.Queries.GetList;
 
-public sealed class GetInteractionListQueryHandler(IRepository<Interaction> interactionRepository, IValidator<GetInteractionListQuery> validator, IMapper<Interaction, InteractionDto> interactionMapper) : IRequestHandler<GetInteractionListQuery, PagedResult<InteractionDto>>
+public sealed class GetInteractionListQueryHandler(IRepository<Interaction> interactionRepository, IMapper<Interaction, InteractionDto> interactionMapper) : IRequestHandler<GetInteractionListQuery, PagedResult<InteractionDto>>
 {
     public async Task<PagedResult<InteractionDto>> Handle(GetInteractionListQuery request, CancellationToken cancellationToken)
     {
-        if (!validator.Validate(request))
-            throw new AppValidationException(validator.GetErrors);
-
         Expression<Func<Interaction, bool>>? predicate = null;
 
         if (request.Search.IsNotNullOrEmpty())

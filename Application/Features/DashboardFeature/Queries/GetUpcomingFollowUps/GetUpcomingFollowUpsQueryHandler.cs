@@ -1,6 +1,5 @@
 using Application.Abstractions.Mappers;
 using Application.Abstractions.Persistence.Repository;
-using Application.Abstractions.Validators;
 using Application.Common.Pagination;
 using Application.Extensions;
 using Application.Features.CustomerProductFeature.DTOs;
@@ -13,13 +12,10 @@ using System.Linq.Expressions;
 
 namespace Application.Features.DashboardFeature.Queries.GetUpcomingFollowUps;
 
-public sealed class GetUpcomingFollowUpsQueryHandler(IRepository<CustomerProduct> customerProductRepository, IValidator<GetUpcomingFollowUpsQuery> validator, IMapper<CustomerProduct, CustomerProductDto> customerProductMapper) : IRequestHandler<GetUpcomingFollowUpsQuery, PagedResult<CustomerProductDto>>
+public sealed class GetUpcomingFollowUpsQueryHandler(IRepository<CustomerProduct> customerProductRepository, IMapper<CustomerProduct, CustomerProductDto> customerProductMapper) : IRequestHandler<GetUpcomingFollowUpsQuery, PagedResult<CustomerProductDto>>
 {
     public async Task<PagedResult<CustomerProductDto>> Handle(GetUpcomingFollowUpsQuery request, CancellationToken cancellationToken)
     {
-        if (!validator.Validate(request))
-            throw new AppValidationException(validator.GetErrors);
-
         var startDate = request.StartDate ?? DateTimeOffset.UtcNow;
         var endDate = request.EndDate ?? startDate.AddDays(7);
 

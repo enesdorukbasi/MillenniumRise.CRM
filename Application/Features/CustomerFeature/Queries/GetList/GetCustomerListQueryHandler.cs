@@ -1,6 +1,5 @@
 using Application.Abstractions.Mappers;
 using Application.Abstractions.Persistence.Repository;
-using Application.Abstractions.Validators;
 using Application.Common.Pagination;
 using Application.Extensions;
 using Application.Features.CustomerFeature.DTOs;
@@ -11,13 +10,10 @@ using System.Linq.Expressions;
 
 namespace Application.Features.CustomerFeature.Queries.GetList;
 
-public sealed class GetCustomerListQueryHandler(IRepository<Customer> customerRepository, IValidator<GetCustomerListQuery> validator, IMapper<Customer, CustomerDto> customerMapper) : IRequestHandler<GetCustomerListQuery, PagedResult<CustomerDto>>
+public sealed class GetCustomerListQueryHandler(IRepository<Customer> customerRepository, IMapper<Customer, CustomerDto> customerMapper) : IRequestHandler<GetCustomerListQuery, PagedResult<CustomerDto>>
 {
     public async Task<PagedResult<CustomerDto>> Handle(GetCustomerListQuery request, CancellationToken cancellationToken)
     {
-        if (!validator.Validate(request))
-            throw new AppValidationException(validator.GetErrors);
-
         Expression<Func<Customer, bool>>? predicate = null;
 
         if (request.Search.IsNotNullOrEmpty())

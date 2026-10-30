@@ -1,6 +1,5 @@
 using Application.Abstractions.Mappers;
 using Application.Abstractions.Persistence.Repository;
-using Application.Abstractions.Validators;
 using Application.Features.CustomerProductFeature.DTOs;
 using Domain.Entities;
 using Domain.Exceptions;
@@ -9,13 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.CustomerProductFeature.Commands.Update;
 
-public sealed class UpdateCustomerProductCommandHandler(IRepository<CustomerProduct> customerProductRepository, IRepository<Customer> customerRepository, IRepository<Product> productRepository, IValidator<UpdateCustomerProductCommand> validator, IMapper<CustomerProduct, CustomerProductDto> customerProductMapper) : IRequestHandler<UpdateCustomerProductCommand, CustomerProductDto>
+public sealed class UpdateCustomerProductCommandHandler(IRepository<CustomerProduct> customerProductRepository, IRepository<Customer> customerRepository, IRepository<Product> productRepository, IMapper<CustomerProduct, CustomerProductDto> customerProductMapper) : IRequestHandler<UpdateCustomerProductCommand, CustomerProductDto>
 {
     public async Task<CustomerProductDto> Handle(UpdateCustomerProductCommand request, CancellationToken cancellationToken)
     {
-        if (!validator.Validate(request))
-            throw new AppValidationException(validator.GetErrors);
-
         var customerProduct = await customerProductRepository.SingleOrDefaultAsync(
             current => current.Id == request.Id,
             query => query

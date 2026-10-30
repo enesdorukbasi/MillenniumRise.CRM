@@ -1,6 +1,5 @@
 using Application.Abstractions.Mappers;
 using Application.Abstractions.Persistence.Repository;
-using Application.Abstractions.Validators;
 using Application.Features.ProductFeature.DTOs;
 using Domain.Entities;
 using Domain.Exceptions;
@@ -8,13 +7,10 @@ using MediatR;
 
 namespace Application.Features.ProductFeature.Commands.Create;
 
-public sealed class CreateProductCommandHandler(IRepository<Product> productRepository, IRepository<UploadedFile> uploadedFileRepository, IValidator<CreateProductCommand> validator, IMapper<Product, ProductDto> productMapper) : IRequestHandler<CreateProductCommand, ProductDto>
+public sealed class CreateProductCommandHandler(IRepository<Product> productRepository, IRepository<UploadedFile> uploadedFileRepository, IMapper<Product, ProductDto> productMapper) : IRequestHandler<CreateProductCommand, ProductDto>
 {
     public async Task<ProductDto> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
-        if (!validator.Validate(request))
-            throw new AppValidationException(validator.GetErrors);
-
         if (await productRepository.IsExistsAsync(product => product.Name == request.Name))
             throw new ConflictException("Aynı isimle kayıtlı başka bir ürün bulunuyor.");
 

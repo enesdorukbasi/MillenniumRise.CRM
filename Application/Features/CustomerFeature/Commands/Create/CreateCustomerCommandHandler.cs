@@ -1,6 +1,5 @@
 using Application.Abstractions.Mappers;
 using Application.Abstractions.Persistence.Repository;
-using Application.Abstractions.Validators;
 using Application.Features.CustomerFeature.DTOs;
 using Domain.Entities;
 using Domain.Exceptions;
@@ -8,13 +7,10 @@ using MediatR;
 
 namespace Application.Features.CustomerFeature.Commands.Create;
 
-public sealed class CreateCustomerCommandHandler(IRepository<Customer> customerRepository, IValidator<CreateCustomerCommand> validator, IMapper<Customer, CustomerDto> customerMapper) : IRequestHandler<CreateCustomerCommand, CustomerDto>
+public sealed class CreateCustomerCommandHandler(IRepository<Customer> customerRepository, IMapper<Customer, CustomerDto> customerMapper) : IRequestHandler<CreateCustomerCommand, CustomerDto>
 {
     public async Task<CustomerDto> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
     {
-        if (!validator.Validate(request))
-            throw new AppValidationException(validator.GetErrors);
-
         var customer = new Customer
         {
             FullName = request.FullName,

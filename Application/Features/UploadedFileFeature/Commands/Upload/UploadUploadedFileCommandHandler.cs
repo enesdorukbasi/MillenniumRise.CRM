@@ -1,7 +1,6 @@
 using Application.Abstractions.FileUploader;
 using Application.Abstractions.Mappers;
 using Application.Abstractions.Persistence.Repository;
-using Application.Abstractions.Validators;
 using Application.Features.UploadedFileFeature.DTOs;
 using Domain.Entities;
 using Domain.Exceptions;
@@ -9,13 +8,10 @@ using MediatR;
 
 namespace Application.Features.UploadedFileFeature.Commands.Upload;
 
-public sealed class UploadUploadedFileCommandHandler(IRepository<UploadedFile> uploadedFileRepository, IFileService fileService, IValidator<UploadUploadedFileCommand> validator, IMapper<UploadedFile, UploadedFileDto> uploadedFileMapper) : IRequestHandler<UploadUploadedFileCommand, UploadedFileDto>
+public sealed class UploadUploadedFileCommandHandler(IRepository<UploadedFile> uploadedFileRepository, IFileService fileService, IMapper<UploadedFile, UploadedFileDto> uploadedFileMapper) : IRequestHandler<UploadUploadedFileCommand, UploadedFileDto>
 {
     public async Task<UploadedFileDto> Handle(UploadUploadedFileCommand request, CancellationToken cancellationToken)
     {
-        if (!validator.Validate(request))
-            throw new AppValidationException(validator.GetErrors);
-
         var uploadedFile = await fileService.UploadAsync(request.File, cancellationToken);
 
         try

@@ -1,6 +1,5 @@
 using Application.Abstractions.Mappers;
 using Application.Abstractions.Persistence.Repository;
-using Application.Abstractions.Validators;
 using Application.Common.Pagination;
 using Application.Extensions;
 using Application.Features.UploadedFileFeature.DTOs;
@@ -11,13 +10,10 @@ using System.Linq.Expressions;
 
 namespace Application.Features.UploadedFileFeature.Queries.GetList;
 
-public sealed class GetUploadedFileListQueryHandler(IRepository<UploadedFile> uploadedFileRepository, IValidator<GetUploadedFileListQuery> validator, IMapper<UploadedFile, UploadedFileDto> uploadedFileMapper) : IRequestHandler<GetUploadedFileListQuery, PagedResult<UploadedFileDto>>
+public sealed class GetUploadedFileListQueryHandler(IRepository<UploadedFile> uploadedFileRepository, IMapper<UploadedFile, UploadedFileDto> uploadedFileMapper) : IRequestHandler<GetUploadedFileListQuery, PagedResult<UploadedFileDto>>
 {
     public async Task<PagedResult<UploadedFileDto>> Handle(GetUploadedFileListQuery request, CancellationToken cancellationToken)
     {
-        if (!validator.Validate(request))
-            throw new AppValidationException(validator.GetErrors);
-
         Expression<Func<UploadedFile, bool>>? predicate = null;
 
         if (request.Search.IsNotNullOrEmpty())

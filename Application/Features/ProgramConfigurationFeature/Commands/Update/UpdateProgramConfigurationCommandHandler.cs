@@ -1,6 +1,5 @@
 using Application.Abstractions.Mappers;
 using Application.Abstractions.Persistence.Repository;
-using Application.Abstractions.Validators;
 using Application.Features.ProgramConfigurationFeature.DTOs;
 using Domain.Entities;
 using Domain.Exceptions;
@@ -9,13 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.ProgramConfigurationFeature.Commands.Update;
 
-public sealed class UpdateProgramConfigurationCommandHandler(IRepository<ProgramConfiguration> programConfigurationRepository, IRepository<UploadedFile> uploadedFileRepository, IValidator<UpdateProgramConfigurationCommand> validator, IMapper<ProgramConfiguration, ProgramConfigurationDto> programConfigurationMapper) : IRequestHandler<UpdateProgramConfigurationCommand, ProgramConfigurationDto>
+public sealed class UpdateProgramConfigurationCommandHandler(IRepository<ProgramConfiguration> programConfigurationRepository, IRepository<UploadedFile> uploadedFileRepository, IMapper<ProgramConfiguration, ProgramConfigurationDto> programConfigurationMapper) : IRequestHandler<UpdateProgramConfigurationCommand, ProgramConfigurationDto>
 {
     public async Task<ProgramConfigurationDto> Handle(UpdateProgramConfigurationCommand request, CancellationToken cancellationToken)
     {
-        if (!validator.Validate(request))
-            throw new AppValidationException(validator.GetErrors);
-
         var programConfiguration = await programConfigurationRepository.SingleOrDefaultAsync(
             configuration => true,
             query => query

@@ -1,6 +1,5 @@
 using Application.Abstractions.Mappers;
 using Application.Abstractions.Persistence.Repository;
-using Application.Abstractions.Validators;
 using Application.Features.CustomerProductFeature.DTOs;
 using Domain.Entities;
 using Domain.Exceptions;
@@ -9,13 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.CustomerProductFeature.Commands.Create;
 
-public sealed class CreateCustomerProductCommandHandler(IRepository<CustomerProduct> customerProductRepository, IRepository<Customer> customerRepository, IRepository<Product> productRepository, IValidator<CreateCustomerProductCommand> validator, IMapper<CustomerProduct, CustomerProductDto> customerProductMapper) : IRequestHandler<CreateCustomerProductCommand, CustomerProductDto>
+public sealed class CreateCustomerProductCommandHandler(IRepository<CustomerProduct> customerProductRepository, IRepository<Customer> customerRepository, IRepository<Product> productRepository, IMapper<CustomerProduct, CustomerProductDto> customerProductMapper) : IRequestHandler<CreateCustomerProductCommand, CustomerProductDto>
 {
     public async Task<CustomerProductDto> Handle(CreateCustomerProductCommand request, CancellationToken cancellationToken)
     {
-        if (!validator.Validate(request))
-            throw new AppValidationException(validator.GetErrors);
-
         var customer = await customerRepository.SingleOrDefaultAsync(current => current.Id == request.CustomerId)
             ?? throw new NotFoundException("Müşteri", request.CustomerId);
 

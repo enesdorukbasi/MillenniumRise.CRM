@@ -1,6 +1,5 @@
 using Application.Abstractions.Mappers;
 using Application.Abstractions.Persistence.Repository;
-using Application.Abstractions.Validators;
 using Application.Common.Pagination;
 using Application.Features.InteractionFeature.DTOs;
 using Domain.Entities;
@@ -10,13 +9,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.DashboardFeature.Queries.GetRecentInteractions;
 
-public sealed class GetRecentInteractionsQueryHandler(IRepository<Interaction> interactionRepository, IValidator<GetRecentInteractionsQuery> validator, IMapper<Interaction, InteractionDto> interactionMapper) : IRequestHandler<GetRecentInteractionsQuery, PagedResult<InteractionDto>>
+public sealed class GetRecentInteractionsQueryHandler(IRepository<Interaction> interactionRepository, IMapper<Interaction, InteractionDto> interactionMapper) : IRequestHandler<GetRecentInteractionsQuery, PagedResult<InteractionDto>>
 {
     public async Task<PagedResult<InteractionDto>> Handle(GetRecentInteractionsQuery request, CancellationToken cancellationToken)
     {
-        if (!validator.Validate(request))
-            throw new AppValidationException(validator.GetErrors);
-
         var totalCount = await interactionRepository.GetCount();
         var interactions = await interactionRepository.GetAllAsync(
             orderBy: query => query
