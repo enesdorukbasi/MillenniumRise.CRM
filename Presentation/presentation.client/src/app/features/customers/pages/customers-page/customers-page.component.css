@@ -1,1 +1,25 @@
-.filter-select { width: auto; min-width: 10rem; }.delete-action { color: var(--color-danger); }.confirm-text { color: var(--color-ink-600); font-size: .86rem; margin: 0; }
+.filter-select { width: auto; min-width: 10rem; }
+.delete-action { color: var(--color-danger); }
+.confirm-text { color: var(--color-ink-600); font-size: .86rem; margin: 0; }
+.import-actions { display: flex; gap: .55rem; margin-left: auto; }
+.import-success { border-radius: 0; border-width: 0 0 1px; margin: 0; }
+.alert--success { background: var(--color-success-soft); border-color: color-mix(in srgb, var(--color-success) 35%, transparent); color: var(--color-success-ink); }
+.import-content { display: grid; gap: 1rem; }
+.import-errors > div { min-width: 0; }
+.import-errors strong { display: block; margin-bottom: .35rem; }
+.import-errors ul { margin: 0; max-height: 14rem; overflow: auto; padding-left: 1.1rem; }
+.import-errors li + li { margin-top: .3rem; }
+.import-description { color: var(--color-ink-600); font-size: .82rem; margin: 0; }
+.template-link { background: transparent; border: 0; color: var(--color-primary-600); cursor: pointer; font-size: .78rem; font-weight: 680; justify-self: start; padding: 0; }
+.template-link:hover { color: var(--color-primary-700); text-decoration: underline; }
+.import-file { display: grid; gap: .45rem; }
+.import-file__label { color: var(--color-ink-700); font-size: .78rem; font-weight: 670; }
+.import-file input { background: var(--color-surface-subtle); border: 1px dashed var(--color-border-strong); border-radius: var(--radius-sm); color: var(--color-ink-600); cursor: pointer; font-size: .76rem; padding: .8rem; width: 100%; }
+.import-file__hint { color: var(--color-ink-400); font-size: .7rem; }
+.selected-import-file { align-items: center; background: var(--color-primary-50); border: 1px solid var(--color-primary-100); border-radius: var(--radius-sm); color: var(--color-primary-700); display: flex; font-size: .76rem; gap: .5rem; min-width: 0; padding: .65rem .75rem; }
+.selected-import-file span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 850px) {
+  .import-actions { margin-left: 0; width: 100%; }
+  .import-actions .button { flex: 1; }
+}

@@ -27,6 +27,10 @@ export interface CustomerRequest {
   note: string | null;
 }
 
+export interface CustomerImportResult {
+  importedCount: number;
+}
+
 export enum CustomerSortField { FullName, CompanyName, CustomerType, CreatedAt, UpdatedAt }
 
 export interface CustomerListQuery {

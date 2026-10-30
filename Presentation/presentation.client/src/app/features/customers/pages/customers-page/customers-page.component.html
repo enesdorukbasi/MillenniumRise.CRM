@@ -1,5 +1,6 @@
 <app-page-header title="Müşteriler" description="Müşteri kayıtlarını yönetin, arayın ve güncelleyin." actionLabel="Yeni Müşteri" (action)="openCreate()"></app-page-header>
 <section class="panel">
+  <div *ngIf="importSuccessMessage" class="alert alert--success import-success"><app-icon name="check" [size]="18"></app-icon><span>{{ importSuccessMessage }}</span></div>
   <form class="toolbar" [formGroup]="filterForm" (ngSubmit)="applyFilters()">
     <label class="search-box"><app-icon name="search" [size]="18"></app-icon><input formControlName="search" placeholder="Ad, şirket, e-posta veya telefon ara"></label>
     <select class="select-control filter-select" formControlName="customerType"><option [ngValue]="null">Tüm müşteri tipleri</option><option *ngFor="let type of customerTypes" [ngValue]="type">{{ customerTypeLabels[type] }}</option></select>
@@ -7,6 +8,10 @@
     <select class="select-control filter-select" formControlName="sortDirection"><option [ngValue]="sortDirections.Ascending">Artan</option><option [ngValue]="sortDirections.Descending">Azalan</option></select>
     <button *ngIf="!hasActiveFilters" class="button button--secondary" type="submit">Filtrele</button>
     <button *ngIf="hasActiveFilters" class="button button--secondary" type="button" (click)="clearFilters()">Filtreyi Kaldır</button>
+    <div class="import-actions">
+      <button class="button button--secondary" type="button" (click)="downloadImportTemplate()">Excel Şablonu</button>
+      <button class="button button--primary" type="button" (click)="openImport()"><app-icon name="upload" [size]="16"></app-icon>Excel'den İçe Aktar</button>
+    </div>
   </form>
   <div *ngIf="loading" class="state-panel"><span class="spinner"></span><p>Müşteriler yükleniyor...</p></div>
   <div *ngIf="!loading && errorMessage" class="state-panel"><app-icon name="alert" [size]="28"></app-icon><h3>Müşteriler yüklenemedi</h3><p>{{ errorMessage }}</p><button class="button button--secondary" (click)="load()">Tekrar Dene</button></div>
@@ -31,6 +36,24 @@
     <label class="field form-grid__full"><span class="field__label">Konum</span><input class="input-control" formControlName="location"></label>
     <label class="field form-grid__full"><span class="field__label">Not</span><textarea class="textarea-control" rows="4" formControlName="note"></textarea></label>
   </div><div class="form-actions"><button class="button button--secondary" type="button" (click)="formOpen = false">Vazgeç</button><button class="button button--primary" type="submit" [disabled]="saving">{{ saving ? 'Kaydediliyor...' : 'Kaydet' }}</button></div></form>
+</app-modal>
+
+<app-modal [open]="importOpen" title="Excel'den Müşteri İçe Aktar" size="small" (closed)="importOpen = false">
+  <div *ngIf="importErrors.length" class="alert alert--danger import-errors">
+    <app-icon name="alert" [size]="18"></app-icon>
+    <div><strong>İçe aktarma yapılamadı.</strong><ul><li *ngFor="let error of importErrors">{{ error }}</li></ul></div>
+  </div>
+  <div class="import-content">
+    <p class="import-description">Şablonu doldurup <strong>.xlsx</strong> dosyanızı seçin. Ad Soyad ve Müşteri Tipi zorunludur; boş bırakılan diğer alanlar null olarak kaydedilir. Herhangi bir satır hatalıysa hiçbir kayıt eklenmez.</p>
+    <button class="template-link" type="button" (click)="downloadImportTemplate()">Excel şablonunu indir</button>
+    <label class="import-file">
+      <span class="import-file__label">Excel dosyası *</span>
+      <input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" (change)="onImportFileSelected($event)">
+      <span class="import-file__hint">En fazla 5 MB ve 5.000 müşteri.</span>
+    </label>
+    <div *ngIf="selectedImportFile" class="selected-import-file"><app-icon name="files" [size]="18"></app-icon><span>{{ selectedImportFile.name }}</span></div>
+  </div>
+  <div class="form-actions"><button class="button button--secondary" type="button" (click)="importOpen = false">Vazgeç</button><button class="button button--primary" type="button" [disabled]="!selectedImportFile || importing" (click)="importCustomers()">{{ importing ? 'İçe aktarılıyor...' : 'İçe Aktar' }}</button></div>
 </app-modal>
 
 <app-modal [open]="deleteOpen" title="Müşteriyi Sil" size="small" (closed)="deleteOpen = false">

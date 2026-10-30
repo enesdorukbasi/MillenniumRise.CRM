@@ -2,8 +2,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ProblemDetails } from '../models/api.models';
 
 export function getApiErrorMessage(error: unknown): string {
+  return getApiErrorMessages(error).join(' ');
+}
+
+export function getApiErrorMessages(error: unknown): string[] {
   if (!(error instanceof HttpErrorResponse)) {
-    return 'Beklenmeyen bir hata oluştu.';
+    return ['Beklenmeyen bir hata oluştu.'];
   }
 
   const body = error.error as unknown;
@@ -16,8 +20,8 @@ export function getApiErrorMessage(error: unknown): string {
   }
 
   if (problem?.errors?.length) {
-    return problem.errors.join(' ');
+    return problem.errors;
   }
 
-  return problem?.detail || problem?.title || 'İşlem tamamlanamadı. Lütfen tekrar deneyin.';
+  return [problem?.detail || problem?.title || 'İşlem tamamlanamadı. Lütfen tekrar deneyin.'];
 }

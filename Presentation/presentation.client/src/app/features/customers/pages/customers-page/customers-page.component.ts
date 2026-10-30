@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
-import { getApiErrorMessage } from '../../../../core/http/api-error';
+import { getApiErrorMessage, getApiErrorMessages } from '../../../../core/http/api-error';
 import { PagedResult } from '../../../../core/models/api.models';
 import { Customer, CustomerListQuery, CustomerRequest, CustomerSortField } from '../../../../core/models/crm.models';
 import { CustomerType, SortingDirection, customerTypeLabels } from '../../../../core/models/domain.enums';
@@ -12,13 +12,18 @@ export class CustomersPageComponent implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
   loading = true;
   saving = false;
+  importing = false;
   errorMessage = '';
   formError = '';
+  importErrors: string[] = [];
+  importSuccessMessage = '';
   result: PagedResult<Customer> | null = null;
   formOpen = false;
+  importOpen = false;
   deleteOpen = false;
   selectedCustomer: Customer | null = null;
   customerToDelete: Customer | null = null;
+  selectedImportFile: File | null = null;
   query: CustomerListQuery = { pageNumber: 1, pageSize: 20, sortBy: CustomerSortField.FullName, sortDirection: SortingDirection.Ascending };
   readonly customerTypes = [CustomerType.Individual, CustomerType.Business];
   readonly customerTypeLabels = customerTypeLabels;
@@ -61,6 +66,73 @@ export class CustomersPageComponent implements OnInit {
 
   openCreate(): void {
     this.selectedCustomer = null; this.formError = ''; this.customerForm.reset({ fullName: '', companyName: '', phoneNumber: '', email: '', customerType: CustomerType.Individual, sector: '', website: '', sourceUrl: '', location: '', note: '' }); this.formOpen = true;
+  }
+
+  openImport(): void {
+    this.selectedImportFile = null;
+    this.importErrors = [];
+    this.importOpen = true;
+  }
+
+  onImportFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.importErrors = [];
+    const file = input.files?.item(0) ?? null;
+
+    if (file && !file.name.toLocaleLowerCase('tr-TR').endsWith('.xlsx')) {
+      this.selectedImportFile = null;
+      input.value = '';
+      this.importErrors = ['Yalnızca .xlsx uzantılı Excel dosyaları yüklenebilir.'];
+      return;
+    }
+
+    if (file && file.size > 5 * 1024 * 1024) {
+      this.selectedImportFile = null;
+      input.value = '';
+      this.importErrors = ['Excel dosyası en fazla 5 MB olabilir.'];
+      return;
+    }
+
+    this.selectedImportFile = file;
+  }
+
+  importCustomers(): void {
+    if (!this.selectedImportFile || this.importing) {
+      this.importErrors = ['İçe aktarılacak Excel dosyasını seçin.'];
+      return;
+    }
+
+    this.importing = true;
+    this.importErrors = [];
+    this.importSuccessMessage = '';
+    this.customersService.import(this.selectedImportFile).pipe(finalize(() => this.importing = false)).subscribe({
+      next: response => {
+        const importedCount = response.data?.importedCount ?? 0;
+        this.importOpen = false;
+        this.selectedImportFile = null;
+        this.importSuccessMessage = `${importedCount} müşteri başarıyla içe aktarıldı.`;
+        this.load();
+      },
+      error: error => this.importErrors = getApiErrorMessages(error)
+    });
+  }
+
+  downloadImportTemplate(): void {
+    this.importErrors = [];
+    this.customersService.downloadImportTemplate().subscribe({
+      next: blob => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'musteri-ice-aktarma-sablonu.xlsx';
+        link.click();
+        URL.revokeObjectURL(url);
+      },
+      error: error => {
+        this.importErrors = getApiErrorMessages(error);
+        this.importOpen = true;
+      }
+    });
   }
 
   openEdit(customer: Customer): void {

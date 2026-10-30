@@ -5,6 +5,7 @@ using Infrastructure;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Extensions;
 using Presentation.Server.Middlewares;
+using Presentation.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services
 builder.Services.Configure<AdminUserSettings>(builder.Configuration.GetRequiredSection(AdminUserSettings.SectionName));
 
 builder.Services.AddControllers();
+builder.Services.AddSingleton<CustomerExcelService>();
 builder.Services.AddProblemDetails(options =>
 {
     options.CustomizeProblemDetails = context =>
