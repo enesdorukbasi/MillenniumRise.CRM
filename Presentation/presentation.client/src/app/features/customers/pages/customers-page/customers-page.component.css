@@ -1,7 +1,6 @@
 .filter-select { width: auto; min-width: 10rem; }
 .delete-action { color: var(--color-danger); }
 .confirm-text { color: var(--color-ink-600); font-size: .86rem; margin: 0; }
-.import-actions { display: flex; gap: .55rem; margin-left: auto; }
 .import-success { border-radius: 0; border-width: 0 0 1px; margin: 0; }
 .alert--success { background: var(--color-success-soft); border-color: color-mix(in srgb, var(--color-success) 35%, transparent); color: var(--color-success-ink); }
 .import-content { display: grid; gap: 1rem; }
@@ -19,7 +18,3 @@
 .selected-import-file { align-items: center; background: var(--color-primary-50); border: 1px solid var(--color-primary-100); border-radius: var(--radius-sm); color: var(--color-primary-700); display: flex; font-size: .76rem; gap: .5rem; min-width: 0; padding: .65rem .75rem; }
 .selected-import-file span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-@media (max-width: 850px) {
-  .import-actions { margin-left: 0; width: 100%; }
-  .import-actions .button { flex: 1; }
-}

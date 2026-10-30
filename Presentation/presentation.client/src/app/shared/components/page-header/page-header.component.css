@@ -1,4 +1,8 @@
 .page-header { align-items: flex-end; display: flex; gap: 1rem; justify-content: space-between; margin-bottom: 1.5rem; }
+.page-header__actions { align-items: center; display: flex; flex-wrap: wrap; gap: .55rem; justify-content: flex-end; }
 h1 { color: var(--color-ink-900); font-size: clamp(1.45rem, 2vw, 1.8rem); letter-spacing: -.035em; line-height: 1.15; margin: 0; }
 p { color: var(--color-ink-500); font-size: .9rem; margin: .42rem 0 0; }
-@media (max-width: 640px) { .page-header { align-items: stretch; flex-direction: column; } }
+@media (max-width: 640px) {
+  .page-header { align-items: stretch; flex-direction: column; }
+  .page-header__actions { justify-content: flex-start; }
+}

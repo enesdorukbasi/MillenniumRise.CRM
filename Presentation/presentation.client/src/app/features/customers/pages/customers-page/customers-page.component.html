@@ -1,4 +1,7 @@
-<app-page-header title="Müşteriler" description="Müşteri kayıtlarını yönetin, arayın ve güncelleyin." actionLabel="Yeni Müşteri" (action)="openCreate()"></app-page-header>
+<app-page-header title="Müşteriler" description="Müşteri kayıtlarını yönetin, arayın ve güncelleyin." actionLabel="Yeni Müşteri" (action)="openCreate()">
+  <button pageHeaderAction class="button button--secondary" type="button" (click)="downloadImportTemplate()">Excel Şablonu</button>
+  <button pageHeaderAction class="button button--secondary" type="button" (click)="openImport()"><app-icon name="upload" [size]="16"></app-icon>Excel'den İçe Aktar</button>
+</app-page-header>
 <section class="panel">
   <div *ngIf="importSuccessMessage" class="alert alert--success import-success"><app-icon name="check" [size]="18"></app-icon><span>{{ importSuccessMessage }}</span></div>
   <form class="toolbar" [formGroup]="filterForm" (ngSubmit)="applyFilters()">
@@ -8,10 +11,6 @@
     <select class="select-control filter-select" formControlName="sortDirection"><option [ngValue]="sortDirections.Ascending">Artan</option><option [ngValue]="sortDirections.Descending">Azalan</option></select>
     <button *ngIf="!hasActiveFilters" class="button button--secondary" type="submit">Filtrele</button>
     <button *ngIf="hasActiveFilters" class="button button--secondary" type="button" (click)="clearFilters()">Filtreyi Kaldır</button>
-    <div class="import-actions">
-      <button class="button button--secondary" type="button" (click)="downloadImportTemplate()">Excel Şablonu</button>
-      <button class="button button--primary" type="button" (click)="openImport()"><app-icon name="upload" [size]="16"></app-icon>Excel'den İçe Aktar</button>
-    </div>
   </form>
   <div *ngIf="loading" class="state-panel"><span class="spinner"></span><p>Müşteriler yükleniyor...</p></div>
   <div *ngIf="!loading && errorMessage" class="state-panel"><app-icon name="alert" [size]="28"></app-icon><h3>Müşteriler yüklenemedi</h3><p>{{ errorMessage }}</p><button class="button button--secondary" (click)="load()">Tekrar Dene</button></div>
